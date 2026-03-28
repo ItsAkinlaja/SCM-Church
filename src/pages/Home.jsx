@@ -255,7 +255,7 @@ const Home = () => {
       </section>
 
       {/* Pillars Section */}
-      <section className="relative -mt-8 pb-20 z-10">
+      <section className="relative py-20 z-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 lg:grid-cols-3">
             {pillars.map((pillar) => {
