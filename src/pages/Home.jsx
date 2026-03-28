@@ -24,7 +24,6 @@ const Home = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [programmes, setProgrammes] = useState([]);
   const [testimonies, setTestimonies] = useState([]);
-  const [settings, setSettings] = useState(null);
   const [go, setGo] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -39,7 +38,6 @@ const Home = () => {
     const fetchHomeData = async () => {
       try {
         const [
-          settingsResponse,
           programmesResponse,
           pamphletResponse,
           eventsResponse,
@@ -47,7 +45,6 @@ const Home = () => {
           testimoniesResponse,
           leadersResponse,
         ] = await Promise.all([
-          supabase.from('settings').select('*').single(),
           supabase.from('programmes').select('*').order('occurrence', { ascending: false }),
           supabase
             .from('weekly_materials')
@@ -78,7 +75,6 @@ const Home = () => {
             .single(),
         ]);
 
-        if (settingsResponse.data) setSettings(settingsResponse.data);
         if (programmesResponse.data) setProgrammes(programmesResponse.data);
         if (pamphletResponse.data?.length) setLatestPamphlet(pamphletResponse.data[0]);
         setUpcomingEvents(eventsResponse.data || []);
@@ -95,21 +91,6 @@ const Home = () => {
 
   const weeklyProgs = programmes.filter((programme) => programme.occurrence === 'Weekly');
   const monthlyProgs = programmes.filter((programme) => programme.occurrence === 'Monthly');
-
-  const ministryHighlights = [
-    {
-      value: `${weeklyProgs.length || 3}+`,
-      label: 'Weekly gatherings',
-    },
-    {
-      value: `${monthlyProgs.length || 3}+`,
-      label: 'Monthly expressions',
-    },
-    {
-      value: `${testimonies.length || 3}+`,
-      label: 'Recent testimonies',
-    },
-  ];
 
   const pillars = [
     {
