@@ -133,19 +133,19 @@ const Home = () => {
     {
       url: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073&auto=format&fit=crop',
       title: 'A beautiful church home for worship, word, and prayer.',
-      subtitle: settings?.description || 'Experience the divine presence in an atmosphere of reverence and love.',
+      subtitle: 'Successful Christian Missions International is a Pentecostal church founded in Ile-Ife, Nigeria, dedicated to ministering the gospel through Worship, Word, and Prayer.',
       tag: 'Successful Christian Missions'
     },
     {
       url: 'https://images.unsplash.com/photo-1548625361-195fe5772df8?q=80&w=2072&auto=format&fit=crop',
       title: 'Built on the solid rock of God\'s eternal word.',
-      subtitle: settings?.vision || 'Where sound biblical teaching forms the foundation of our faith.',
+      subtitle: 'Our teachings center on salvation, holiness, the kingdom of God, peace, love, and hope as revealed by the Holy Spirit.',
       tag: 'Our Vision'
     },
     {
       url: 'https://images.unsplash.com/photo-1477617722074-45613a51bf6d?q=80&w=2070&auto=format&fit=crop',
       title: 'United in prayer, strengthened in fellowship.',
-      subtitle: settings?.mission || 'Join a community of believers dedicated to kingdom expansion.',
+      subtitle: 'Join a community of believers dedicated to kingdom expansion and spiritual excellence since July 18, 1999.',
       tag: 'Our Mission'
     },
   ];
@@ -180,10 +180,10 @@ const Home = () => {
                 <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/8 px-5 py-2 text-[11px] font-bold uppercase tracking-[0.32em] text-[#d96858]">
                   Successful Christian Missions
                 </div>
-                <h1 className="max-w-4xl text-5xl font-bold leading-[1.05] tracking-tight transition-all duration-700 sm:text-7xl lg:text-8xl">
+                <h1 className="max-w-4xl text-4xl font-bold leading-[1.1] tracking-tight transition-all duration-700 sm:text-6xl lg:text-7xl">
                   {slides[currentSlide].title}
                 </h1>
-                <p className="mt-8 max-w-2xl text-lg leading-8 text-white/80 transition-all duration-700 sm:text-xl">
+                <p className="mt-6 max-w-xl text-base leading-7 text-white/80 transition-all duration-700 sm:text-lg">
                   {slides[currentSlide].subtitle}
                 </p>
 
