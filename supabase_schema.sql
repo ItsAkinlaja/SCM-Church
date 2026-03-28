@@ -118,9 +118,12 @@ VALUES (
     'Pastor (Prof.) Rufus A. Adedoyin',
     'General Overseer',
     'Rufus A. Adedoyin is a professor of cardiopulmonary Physical Therapy who has published over 170 papers in reputable journals worldwide. He has held several positions in academics such as course coordinator, head of Department, Vice Dean, acting Dean and Dean in the Academics. He has led his professional associations at different levels as a state chairman, editor in chief and president of national body. Pastor Adedoyin became born again in 1986 under the ministration of late apostle Obadare of the Christ Apostolic Church. He had offered spiritual services while he was at the Christ Apostolic Church such choir leader, evangelist and pastor between 1986-1999. He planned to travel abroad for greener pasture like his professional colleagues did, but God commanded him to stay in Nigeria to do his work. He responded to the call of God by establishing the Successful Christian Missions a name God revealed to him in a vision in 1998.',
-    'blog_img'
+    'https://ik.imagekit.io/scmchurch/Professor%20R.%20A.%20Adedoyin.jpg'
 )
-ON CONFLICT (name) DO NOTHING;
+ON CONFLICT (name) DO UPDATE SET
+    bio = EXCLUDED.bio,
+    photo_url = EXCLUDED.photo_url,
+    role = EXCLUDED.role;
 
 -- Programmes Table (Recurring Activities)
 CREATE TABLE IF NOT EXISTS programmes (
