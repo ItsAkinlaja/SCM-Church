@@ -295,11 +295,10 @@ const Home = () => {
               </h2>
               <div className="mt-8 space-y-6 text-lg leading-8 text-slate-600">
                 <p>
-                  {go?.bio ||
-                    'Successful Christian Missions (SCM) is a global ministry dedicated to raising spiritual leaders of excellence and taking the message of Christ to the world. We believe in the transformative power of God’s Word and the importance of a vibrant prayer life.'}
+                  Successful Christian Missions (SCM) International is a Pentecostal church founded in Ile-Ife, Nigeria, on July 18, 1999. Under the leadership of Pastor (Prof.) Rufus A. Adedoyin, we are dedicated to raising spiritual leaders of excellence.
                 </p>
                 <p>
-                  Whether you are joining us for the first time or looking for a spiritual home, we welcome you with open arms. Together, we are building a community of believers who are passionate about God and committed to fulfilling His purpose on earth.
+                  Our ministry is built on the three-fold pillar of <strong>Worship, Word, and Prayer</strong>, focusing on salvation, holiness, and the transformative power of the Holy Spirit in the lives of believers worldwide.
                 </p>
               </div>
               <div className="mt-10 flex items-center gap-6">
@@ -307,7 +306,7 @@ const Home = () => {
                   to="/about"
                   className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-[#b53a2d] transition hover:text-[#982b20]"
                 >
-                  Our Core Values
+                  Read Full Story
                   <ArrowRight size={18} />
                 </Link>
                 <div className="h-10 w-px bg-slate-200" />

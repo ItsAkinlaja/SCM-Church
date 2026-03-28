@@ -99,63 +99,106 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
             <button
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => setIsOpen(true)}
               className="inline-flex items-center justify-center p-2 rounded-xl text-gray-500 hover:bg-gray-50 focus:outline-none transition-colors"
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              <Menu size={24} />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Nav */}
-      <div className={`md:hidden bg-white border-t border-gray-100 shadow-xl overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-screen' : 'max-h-0'}`}>
-        <div className="px-4 pt-4 pb-8 space-y-2">
-          {navLinks.map((link) => (
-            <div key={link.name}>
-              {link.dropdown ? (
-                <div className="w-full">
-                  <button
-                    onClick={() => setOpenDropdown(openDropdown === link.name ? null : link.name)}
-                    className={`w-full flex justify-between items-center px-4 py-4 rounded-2xl text-base font-black tracking-wide transition-all ${
-                      isActive(link.path) || openDropdown === link.name
-                        ? 'bg-scm-blue/10 text-scm-blue'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-scm-blue'
+      {/* Mobile Nav - Slider from left to right */}
+      <div 
+        className={`fixed inset-0 z-[100] md:hidden transition-opacity duration-300 ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        {/* Overlay */}
+        <div 
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          onClick={() => setIsOpen(false)}
+        />
+        
+        {/* Drawer Content */}
+        <div 
+          className={`absolute top-0 left-0 h-full w-[80%] max-w-xs bg-white shadow-2xl transition-transform duration-500 ease-in-out flex flex-col ${
+            isOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          {/* Header */}
+          <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+            <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center space-x-3">
+              {settings?.ministry_logo ? (
+                <img src={settings.ministry_logo} alt="Logo" className="h-10 object-contain" />
+              ) : (
+                <div className="w-8 h-8 bg-scm-blue rounded-lg flex items-center justify-center">
+                  <span className="text-white font-black text-sm">SCM</span>
+                </div>
+              )}
+            </Link>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="p-2 rounded-xl text-gray-400 hover:bg-gray-50 transition-colors"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          {/* Links */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-2">
+            {navLinks.map((link) => (
+              <div key={link.name}>
+                {link.dropdown ? (
+                  <div className="w-full">
+                    <button
+                      onClick={() => setOpenDropdown(openDropdown === link.name ? null : link.name)}
+                      className={`w-full flex justify-between items-center px-4 py-4 rounded-2xl text-base font-black tracking-wide transition-all ${
+                        isActive(link.path) || openDropdown === link.name
+                          ? 'bg-scm-blue/5 text-scm-blue'
+                          : 'text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      <span>{link.name}</span>
+                      <ChevronDown size={20} className={`transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
+                    </button>
+                    {openDropdown === link.name && (
+                      <div className="pl-6 pt-2 pb-2 space-y-1 animate-fade-in-fast">
+                        {link.dropdown.map(item => (
+                          <Link
+                            key={item.name}
+                            to={item.path}
+                            onClick={() => setIsOpen(false)}
+                            className="block px-4 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 hover:text-scm-blue transition-colors"
+                          >
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    to={link.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-4 py-4 rounded-2xl text-base font-black tracking-wide transition-all ${
+                      isActive(link.path)
+                        ? 'bg-scm-blue/5 text-scm-blue'
+                        : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
-                    <span>{link.name}</span>
-                    <ChevronDown size={20} className={`transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
-                  </button>
-                  {openDropdown === link.name && (
-                    <div className="pl-8 pt-2 pb-2 space-y-2">
-                      {link.dropdown.map(item => (
-                        <Link
-                          key={item.name}
-                          to={item.path}
-                          onClick={() => setIsOpen(false)}
-                          className="block px-4 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 hover:text-scm-blue"
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-4 py-4 rounded-2xl text-base font-black tracking-wide transition-all ${
-                    isActive(link.path)
-                      ? 'bg-scm-blue/10 text-scm-blue'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-scm-blue'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              )}
-            </div>
-          ))}
+                    {link.name}
+                  </Link>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Footer Info */}
+          <div className="p-6 border-t border-gray-100 bg-gray-50/50">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">SCM International</p>
+            <p className="text-[10px] font-bold text-gray-500">Founded July 18, 1999</p>
+          </div>
         </div>
       </div>
     </nav>

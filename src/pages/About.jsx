@@ -5,13 +5,18 @@ import { supabase } from '../services/supabaseClient';
 
 const About = () => {
   const [settings, setSettings] = useState(null);
+  const [go, setGo] = useState(null);
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      const { data } = await supabase.from('settings').select('*').single();
-      if (data) setSettings(data);
+    const fetchData = async () => {
+      const [settingsRes, goRes] = await Promise.all([
+        supabase.from('settings').select('*').single(),
+        supabase.from('leaders').select('*').ilike('role', '%General Overseer%').single()
+      ]);
+      if (settingsRes.data) setSettings(settingsRes.data);
+      if (goRes.data) setGo(goRes.data);
     };
-    fetchSettings();
+    fetchData();
   }, []);
 
   return (
@@ -21,6 +26,53 @@ const About = () => {
         subtitle="A Global Mission for Christ"
         image="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=1173&auto=format&fit=crop"
       />
+
+      {/* Leadership Section */}
+      <section className="py-24 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center gap-20">
+            <div className="w-full lg:w-1/3">
+              <div className="relative">
+                <div className="absolute -inset-4 bg-scm-blue/5 rounded-[40px] -z-10" />
+                <div className="aspect-[4/5] rounded-[32px] overflow-hidden shadow-2xl border-8 border-white">
+                  {go?.photo_url ? (
+                    <img src={go.photo_url} alt={go.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
+                      Leadership
+                    </div>
+                  )}
+                </div>
+                <div className="absolute -bottom-6 -right-6 bg-scm-red text-white p-6 rounded-3xl shadow-xl hidden sm:block">
+                  <p className="text-sm font-black uppercase tracking-widest">Founded</p>
+                  <p className="text-2xl font-black">July 18, 1999</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="w-full lg:w-2/3 space-y-8">
+              <div className="inline-flex items-center gap-3 bg-scm-blue/5 text-scm-blue px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest">
+                Our Leadership
+              </div>
+              <h2 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight">
+                {go?.name || 'Pastor (Prof.) Rufus A. Adedoyin'}
+                <span className="block text-scm-red text-2xl mt-2">General Overseer</span>
+              </h2>
+              <div className="prose prose-lg text-gray-500 font-medium leading-relaxed max-w-none">
+                {go?.bio ? (
+                  <div className="space-y-6">
+                    {go.bio.split('\n').map((para, i) => (
+                      <p key={i}>{para}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p>Leadership details are being updated. Check back soon for more information.</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* History Section */}
       <section className="py-20">
