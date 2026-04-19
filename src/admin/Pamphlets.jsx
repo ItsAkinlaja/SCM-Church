@@ -123,38 +123,38 @@ const AdminPamphlets = () => {
   return (
     <div className="space-y-12 animate-fade-in pb-20">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white p-12 md:p-16 rounded-[60px] shadow-2xl border border-gray-100 relative overflow-hidden group">
-         <div className="absolute top-0 left-0 w-96 h-96 bg-scm-gold/5 rounded-full -ml-48 -mt-48 group-hover:scale-150 transition-transform duration-700"></div>
-         <div className="flex items-center space-x-10 relative z-10">
-            <div className="w-24 h-24 bg-scm-gold text-white rounded-[40px] flex items-center justify-center shadow-2xl transform rotate-6 hover:rotate-0 transition-transform duration-500">
-               <FileText size={48} />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8 bg-white p-6 sm:p-12 md:p-16 rounded-[30px] sm:rounded-[60px] shadow-2xl border border-gray-100 relative overflow-hidden group">
+         <div className="absolute top-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-scm-gold/5 rounded-full -ml-32 -mt-32 sm:-ml-48 sm:-mt-48 group-hover:scale-150 transition-transform duration-700"></div>
+         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10 relative z-10 w-full md:w-auto">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-scm-gold text-white rounded-2xl sm:rounded-[40px] flex items-center justify-center shadow-2xl transform rotate-6 hover:rotate-0 transition-transform duration-500 shrink-0">
+               <FileText size={32} className="sm:w-12 sm:h-12" />
             </div>
             <div>
-               <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-3 leading-tight">Study <span className="text-scm-gold">Materials</span></h1>
-               <p className="text-gray-400 font-black uppercase tracking-[0.3em] text-xs flex items-center">
-                  <Sparkles size={14} className="mr-2 text-scm-blue" />
+               <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight">Study <span className="text-scm-gold">Materials</span></h1>
+               <p className="text-gray-400 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs flex items-center">
+                  <Sparkles size={14} className="mr-2 text-scm-blue shrink-0" />
                   Library Count: {pamphlets.length} Guides
                </p>
             </div>
          </div>
          <button
            onClick={() => openModal()}
-           className="px-12 py-6 bg-scm-blue text-white rounded-3xl font-black hover:bg-blue-900 transition-all shadow-xl hover:shadow-scm-blue/40 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center group relative z-10 overflow-hidden"
+           className="w-full md:w-auto mt-4 md:mt-0 px-6 sm:px-12 py-4 sm:py-6 bg-scm-blue text-white rounded-2xl sm:rounded-3xl font-black hover:bg-blue-900 transition-all shadow-xl hover:shadow-scm-blue/40 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center group relative z-10 overflow-hidden"
          >
-           <FilePlus size={24} className="mr-3 group-hover:scale-125 transition-transform" />
+           <FilePlus size={20} className="mr-2 sm:mr-3 group-hover:scale-125 transition-transform sm:w-6 sm:h-6" />
            Upload New Guide
          </button>
       </div>
 
       {/* Materials Table/List */}
-      <div className="bg-white rounded-[60px] shadow-2xl border border-gray-100 overflow-hidden relative group">
-        <div className="p-12 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-8 bg-gray-50/30">
+      <div className="bg-white rounded-[30px] sm:rounded-[60px] shadow-2xl border border-gray-100 overflow-hidden relative group">
+        <div className="p-6 sm:p-12 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-8 bg-gray-50/30">
            <div className="relative w-full md:w-96 group/search">
               <FileSearch className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within/search:text-scm-gold transition-colors" size={20} />
               <input
                 type="text"
                 placeholder="Search study titles..."
-                className="w-full pl-16 pr-6 py-5 bg-white border-2 border-gray-100 rounded-3xl focus:outline-none focus:border-scm-gold focus:ring-8 focus:ring-scm-gold/5 transition-all font-bold text-gray-900"
+                className="w-full pl-16 pr-6 py-4 sm:py-5 bg-white border-2 border-gray-100 rounded-2xl sm:rounded-3xl focus:outline-none focus:border-scm-gold focus:ring-8 focus:ring-scm-gold/5 transition-all font-bold text-gray-900"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -239,21 +239,22 @@ const AdminPamphlets = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/70 backdrop-blur-md animate-fade-in">
-          <div className="bg-white rounded-[60px] shadow-2xl max-w-3xl w-full overflow-hidden relative animate-scale-up border-4 border-white">
-            <div className="bg-scm-gold p-14 text-center relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-700"></div>
-               <button onClick={() => setShowModal(false)} className="absolute top-10 right-10 p-4 bg-white/10 text-white hover:bg-white hover:text-scm-gold rounded-3xl transition-all shadow-2xl">
-                 <X size={24} />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/70 backdrop-blur-md animate-fade-in overflow-y-auto">
+          <div className="bg-white rounded-[30px] sm:rounded-[60px] shadow-2xl max-w-3xl w-full my-4 sm:my-10 max-h-[90vh] sm:max-h-[85vh] flex flex-col relative animate-scale-up border-4 border-white">
+            <div className="bg-scm-gold p-8 sm:p-14 text-center relative overflow-hidden group shrink-0 rounded-t-[26px] sm:rounded-t-[56px]">
+               <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-white/5 rounded-full -mr-24 -mt-24 sm:-mr-32 sm:-mt-32 group-hover:scale-150 transition-transform duration-700"></div>
+               <button onClick={() => setShowModal(false)} className="absolute top-6 right-6 sm:top-10 sm:right-10 p-2 sm:p-4 bg-white/10 text-white hover:bg-white hover:text-scm-gold rounded-xl sm:rounded-3xl transition-all shadow-2xl">
+                 <X size={20} className="sm:w-6 sm:h-6" />
                </button>
-               <h2 className="text-5xl font-black text-white mb-3 underline decoration-white/20 underline-offset-8 leading-tight">
+               <h2 className="text-3xl sm:text-5xl font-black text-white mb-2 sm:mb-3 underline decoration-white/20 underline-offset-8 leading-tight">
                   {editingPamphlet ? 'Edit Guide' : 'Publish Study'}
                </h2>
-               <p className="text-white/40 text-xs font-black uppercase tracking-[0.4em]">Resource Management System</p>
+               <p className="text-white/40 text-[10px] sm:text-xs font-black uppercase tracking-[0.4em]">Resource Management System</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-14 lg:p-20 space-y-12">
-              <div className="space-y-12">
+            <div className="overflow-y-auto w-full p-6 sm:p-14 lg:p-20 flex-1">
+            <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-12">
+              <div className="space-y-8 sm:space-y-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                    <div className="space-y-4 group md:col-span-2">
                       <label className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] ml-2 group-focus-within:text-scm-gold transition-colors">Study Title</label>
@@ -306,24 +307,25 @@ const AdminPamphlets = () => {
                 </div>
               </div>
 
-              <div className="pt-10 flex flex-col sm:flex-row gap-8">
+              <div className="pt-6 sm:pt-10 flex flex-col sm:flex-row gap-4 sm:gap-8">
                 <button
                   type="submit"
                   disabled={submitting || uploading || !formData.file_url}
-                  className="flex-grow py-8 bg-scm-gold text-white rounded-[35px] font-black text-xl hover:bg-amber-600 transition-all shadow-2xl hover:shadow-amber-900/40 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center disabled:opacity-50 disabled:transform-none group"
+                  className="w-full sm:flex-grow py-5 sm:py-8 bg-scm-gold text-white rounded-[20px] sm:rounded-[35px] font-black text-lg sm:text-xl hover:bg-amber-600 transition-all shadow-2xl hover:shadow-amber-900/40 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center disabled:opacity-50 disabled:transform-none group order-1"
                 >
-                  {submitting ? <Loader2 size={28} className="animate-spin" /> : (
+                  {submitting ? <Loader2 size={24} className="animate-spin sm:w-7 sm:h-7" /> : (
                     <>
-                      <Save size={28} className="mr-4 group-hover:scale-110 transition-transform" />
+                      <Save size={20} className="mr-2 sm:mr-4 group-hover:scale-110 transition-transform sm:w-7 sm:h-7 shrink-0" />
                       {editingPamphlet ? 'Confirm Update' : 'Publish Study Guide'}
                     </>
                   )}
                 </button>
-                <button type="button" onClick={() => setShowModal(false)} className="px-14 py-8 bg-gray-50 text-gray-400 rounded-[35px] font-black hover:bg-gray-100 hover:text-gray-600 transition-all shadow-inner transform active:scale-95">
+                <button type="button" onClick={() => setShowModal(false)} className="w-full sm:w-auto px-6 sm:px-14 py-5 sm:py-8 bg-gray-50 text-gray-400 rounded-[20px] sm:rounded-[35px] font-black hover:bg-gray-100 hover:text-gray-600 transition-all shadow-inner transform active:scale-95 order-2">
                   Cancel
                 </button>
               </div>
             </form>
+            </div>
           </div>
         </div>
       )}

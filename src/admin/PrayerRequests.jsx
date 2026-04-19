@@ -41,20 +41,20 @@ const AdminPrayerRequests = () => {
 
   return (
     <div className="space-y-12 animate-fade-in pb-20">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white p-12 md:p-16 rounded-[60px] shadow-2xl border border-gray-100 relative overflow-hidden group">
-         <div className="flex items-center space-x-10 relative z-10">
-            <div className="w-24 h-24 bg-scm-blue text-white rounded-[40px] flex items-center justify-center shadow-2xl">
-               <Heart size={48} />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8 bg-white p-6 sm:p-12 md:p-16 rounded-[30px] sm:rounded-[60px] shadow-2xl border border-gray-100 relative overflow-hidden group">
+         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10 relative z-10 w-full md:w-auto">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-scm-blue text-white rounded-2xl sm:rounded-[40px] flex items-center justify-center shadow-2xl shrink-0">
+               <Heart size={32} className="sm:w-12 sm:h-12" />
             </div>
             <div>
-               <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-3 leading-tight">Prayer <span className="text-scm-blue">Requests</span></h1>
-               <p className="text-gray-400 font-black uppercase tracking-[0.3em] text-xs">Total Requests: {requests.length}</p>
+               <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight">Prayer <span className="text-scm-blue">Requests</span></h1>
+               <p className="text-gray-400 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs">Total Requests: {requests.length}</p>
             </div>
          </div>
       </div>
 
-      <div className="bg-white rounded-[60px] shadow-2xl border border-gray-100 overflow-hidden">
-        <div className="p-12 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-8">
+      <div className="bg-white rounded-[30px] sm:rounded-[60px] shadow-2xl border border-gray-100 overflow-hidden">
+        <div className="p-6 sm:p-12 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-8">
            <div className="relative w-full md:w-96">
               <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
@@ -67,46 +67,46 @@ const AdminPrayerRequests = () => {
            </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 p-12">
+        <div className="grid grid-cols-1 gap-6 sm:gap-8 p-6 sm:p-12">
           {loading ? (
             <div className="py-20 flex justify-center"><Loader2 className="animate-spin text-scm-blue" size={48} /></div>
           ) : filteredRequests.map((req) => (
-            <div key={req.id} className="bg-gray-50 p-10 rounded-[40px] border border-gray-100 hover:bg-white hover:shadow-2xl transition-all duration-500 group">
-               <div className="flex flex-col md:flex-row justify-between gap-8 mb-8">
-                  <div className="flex items-center space-x-6">
-                     <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-scm-red shadow-sm border border-gray-100">
+            <div key={req.id} className="bg-gray-50 p-6 sm:p-10 rounded-[30px] sm:rounded-[40px] border border-gray-100 hover:bg-white hover:shadow-2xl transition-all duration-500 group flex flex-col">
+               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-8 mb-6 sm:mb-8">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                     <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center text-scm-red shadow-sm border border-gray-100 shrink-0">
                         <User size={28} />
                      </div>
                      <div>
-                        <h3 className="text-2xl font-black text-gray-900 flex items-center">
+                        <h3 className="text-xl sm:text-2xl font-black text-gray-900 flex flex-wrap items-center gap-2">
                            {req.name}
                            {req.is_private ? (
-                             <span className="ml-4 px-3 py-1 bg-red-50 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-full flex items-center border border-red-100">
+                             <span className="px-3 py-1 bg-red-50 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-full flex items-center border border-red-100 whitespace-nowrap">
                                 <EyeOff size={12} className="mr-1" /> Private
                              </span>
                            ) : (
-                             <span className="ml-4 px-3 py-1 bg-green-50 text-green-500 text-[10px] font-black uppercase tracking-widest rounded-full flex items-center border border-green-100">
+                             <span className="px-3 py-1 bg-green-50 text-green-500 text-[10px] font-black uppercase tracking-widest rounded-full flex items-center border border-green-100 whitespace-nowrap">
                                 <Eye size={12} className="mr-1" /> Public
                              </span>
                            )}
                         </h3>
-                        <div className="flex items-center text-gray-400 font-bold text-sm mt-1">
-                           <Phone size={14} className="mr-2 text-scm-blue" /> {req.phone || 'No phone provided'}
+                        <div className="flex items-center text-gray-400 font-bold text-[11px] sm:text-sm mt-2">
+                           <Phone size={14} className="mr-2 text-scm-blue shrink-0" /> <span className="truncate">{req.phone || 'No phone provided'}</span>
                         </div>
                      </div>
                   </div>
-                  <div className="flex items-center space-x-4">
-                     <div className="text-right hidden md:block">
+                  <div className="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-t-0 pt-4 sm:pt-0 border-gray-200">
+                     <div className="text-left sm:text-right">
                         <div className="text-xs font-black text-gray-300 uppercase tracking-widest mb-1">Received</div>
                         <div className="text-gray-900 font-bold">{new Date(req.created_at).toLocaleDateString()}</div>
                      </div>
-                     <button onClick={() => handleDelete(req.id)} className="p-4 bg-white text-gray-400 hover:text-scm-red hover:bg-red-50 rounded-2xl border border-gray-100 shadow-xl transition-all hover:scale-110">
-                        <Trash2 size={24} />
+                     <button onClick={() => handleDelete(req.id)} className="p-3 sm:p-4 bg-white text-gray-400 hover:text-scm-red hover:bg-red-50 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xl transition-all hover:scale-110 shrink-0">
+                        <Trash2 size={20} className="sm:w-6 sm:h-6" />
                      </button>
                   </div>
                </div>
-               <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-inner">
-                  <p className="text-gray-600 text-lg leading-relaxed font-medium">"{req.request}"</p>
+               <div className="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-gray-100 shadow-inner flex-grow">
+                  <p className="text-gray-600 text-base sm:text-lg leading-relaxed font-medium">"{req.request}"</p>
                </div>
             </div>
           ))}

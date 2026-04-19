@@ -11,6 +11,10 @@ import {
   Megaphone,
   Settings,
   Users,
+  Image as ImageIcon,
+  Mail,
+  Video,
+  UserPlus
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -88,6 +92,10 @@ const Dashboard = () => {
 
   const actions = [
     { label: 'Manage Members', path: '/admin/members', icon: Users },
+    { label: 'Inbox (Contact)', path: '/admin/messages', icon: Mail },
+    { label: 'Subscribers', path: '/admin/subscribers', icon: UserPlus },
+    { label: 'Update Gallery', path: '/admin/gallery', icon: ImageIcon },
+    { label: 'Latest Sermon', path: '/admin/sermons', icon: Video },
     { label: 'Post Announcement', path: '/admin/announcements', icon: Megaphone },
     { label: 'Edit Programmes', path: '/admin/programmes', icon: ListChecks },
     { label: 'Update Settings', path: '/admin/settings', icon: Settings },

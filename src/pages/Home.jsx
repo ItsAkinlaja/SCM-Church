@@ -27,6 +27,7 @@ const Home = () => {
   const [programmes, setProgrammes] = useState([]);
   const [testimonies, setTestimonies] = useState([]);
   const [go, setGo] = useState(null);
+  const [latestSermon, setLatestSermon] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -39,50 +40,23 @@ const Home = () => {
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
-        const [
-          programmesResponse,
-          pamphletResponse,
-          eventsResponse,
-          announcementsResponse,
-          testimoniesResponse,
-          leadersResponse,
-        ] = await Promise.all([
+        const responses = await Promise.all([
           supabase.from('programmes').select('*').order('occurrence', { ascending: false }),
-          supabase
-            .from('weekly_materials')
-            .select('*')
-            .order('week_date', { ascending: false })
-            .limit(1),
-          supabase
-            .from('events')
-            .select('*')
-            .gte('date', new Date().toISOString().split('T')[0])
-            .order('date', { ascending: true })
-            .limit(3),
-          supabase
-            .from('announcements')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(3),
-          supabase
-            .from('testimonies')
-            .select('*')
-            .eq('is_approved', true)
-            .order('created_at', { ascending: false })
-            .limit(3),
-          supabase
-            .from('leaders')
-            .select('*')
-            .ilike('role', '%General Overseer%')
-            .single(),
+          supabase.from('weekly_materials').select('*').order('week_date', { ascending: false }).limit(1),
+          supabase.from('events').select('*').gte('date', new Date().toISOString().split('T')[0]).order('date', { ascending: true }).limit(3),
+          supabase.from('announcements').select('*').order('created_at', { ascending: false }).limit(3),
+          supabase.from('testimonies').select('*').eq('is_approved', true).order('created_at', { ascending: false }).limit(3),
+          supabase.from('leaders').select('*').ilike('role', '%General Overseer%').limit(1).single(),
+          supabase.from('sermons').select('*').order('date', { ascending: false }).limit(1)
         ]);
 
-        if (programmesResponse.data) setProgrammes(programmesResponse.data);
-        if (pamphletResponse.data?.length) setLatestPamphlet(pamphletResponse.data[0]);
-        setUpcomingEvents(eventsResponse.data || []);
-        setAnnouncements(announcementsResponse.data || []);
-        setTestimonies(testimoniesResponse.data || []);
-        if (leadersResponse.data) setGo(leadersResponse.data);
+        if (responses[0].data) setProgrammes(responses[0].data);
+        if (responses[1].data?.length) setLatestPamphlet(responses[1].data[0]);
+        setUpcomingEvents(responses[2].data || []);
+        setAnnouncements(responses[3].data || []);
+        setTestimonies(responses[4].data || []);
+        if (responses[5].data) setGo(responses[5].data);
+        if (responses[6].data?.length) setLatestSermon(responses[6].data[0]);
       } catch (err) {
         console.error('Error fetching home data:', err);
       }
@@ -330,8 +304,17 @@ const Home = () => {
             </Link>
           </div>
           
-          <div className="relative aspect-video w-full rounded-none md:rounded-2xl overflow-hidden group cursor-pointer border border-white/5 bg-slate-900 shadow-2xl">
-            <img src="https://images.unsplash.com/photo-1551829142-d9b8e5fa666e?auto=format&fit=crop&q=80" alt="Latest Sermon" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-700 group-hover:scale-105" />
+          <a 
+            href={latestSermon?.video_url || '#'} 
+            target="_blank" 
+            rel="noreferrer"
+            className="relative aspect-video w-full rounded-none md:rounded-2xl overflow-hidden group cursor-pointer border border-white/5 bg-slate-900 shadow-2xl block"
+          >
+            <img 
+              src={latestSermon?.thumbnail_url || "https://images.unsplash.com/photo-1551829142-d9b8e5fa666e?auto=format&fit=crop&q=80"} 
+              alt="Latest Sermon" 
+              className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-700 group-hover:scale-105" 
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-[#050b14]/90 via-[#050b14]/30 to-transparent" />
             
             <div className="absolute inset-0 flex items-center justify-center">
@@ -342,10 +325,14 @@ const Home = () => {
 
             <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 md:p-12">
               <div className="inline-block px-3 py-1 bg-white/10 backdrop-blur border border-white/10 text-white text-[9px] font-sans font-bold uppercase tracking-widest mb-3 md:mb-4 rounded-md">Latest Message</div>
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold mb-2 md:mb-3 tracking-tight">The Power of Unwavering Faith</h3>
-              <p className="text-slate-400 font-sans text-xs sm:text-sm">Pastor (Prof.) Rufus A. Adedoyin  •  Sunday Service</p>
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold mb-2 md:mb-3 tracking-tight">
+                {latestSermon?.title || "The Power of Unwavering Faith"}
+              </h3>
+              <p className="text-slate-400 font-sans text-xs sm:text-sm">
+                {latestSermon ? `${latestSermon.preacher} • ${latestSermon.service_type}` : `Pastor (Prof.) Rufus A. Adedoyin • Sunday Service`}
+              </p>
             </div>
-          </div>
+          </a>
         </div>
       </section>
 

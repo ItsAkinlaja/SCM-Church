@@ -30,6 +30,10 @@ import AdminPrayerRequests from './admin/PrayerRequests';
 import AdminTestimonies from './admin/Testimonies';
 import AdminSettings from './admin/Settings';
 import AdminProgrammes from './admin/Programmes';
+import AdminMessages from './admin/Messages';
+import AdminSubscribers from './admin/Subscribers';
+import AdminGallery from './admin/AdminGallery';
+import AdminSermons from './admin/Sermons';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -93,6 +97,10 @@ function App() {
           <Route path="testimonies" element={<AdminTestimonies />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="programmes" element={<AdminProgrammes />} />
+          <Route path="messages" element={<AdminMessages />} />
+          <Route path="subscribers" element={<AdminSubscribers />} />
+          <Route path="gallery" element={<AdminGallery />} />
+          <Route path="sermons" element={<AdminSermons />} />
         </Route>
 
         {/* Catch-all route */}

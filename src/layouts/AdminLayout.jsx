@@ -14,6 +14,11 @@ import {
   ShieldCheck,
   UserCircle,
   Users,
+  Mail,
+  UserPlus,
+  Image as ImageIcon,
+  Video,
+  Globe,
   X,
 } from 'lucide-react';
 import { supabase } from '../services/supabaseClient';
@@ -34,6 +39,10 @@ const AdminLayout = () => {
 
   const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Inbox', path: '/admin/messages', icon: Mail },
+    { name: 'Subscribers', path: '/admin/subscribers', icon: UserPlus },
+    { name: 'Gallery', path: '/admin/gallery', icon: ImageIcon },
+    { name: 'Sermons Media', path: '/admin/sermons', icon: Video },
     { name: 'Programmes', path: '/admin/programmes', icon: ListChecks },
     { name: 'Events', path: '/admin/events', icon: Calendar },
     { name: 'Study Materials', path: '/admin/pamphlets', icon: FileText },
@@ -115,7 +124,14 @@ const AdminLayout = () => {
             })}
           </nav>
 
-          <div className="border-t border-white/10 p-4">
+          <div className="border-t border-white/10 p-4 space-y-2">
+            <Link
+              to="/"
+              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-semibold text-[#b53a2d] bg-white transition hover:bg-gray-100"
+            >
+              <Globe size={18} />
+              <span>Visit Website</span>
+            </Link>
             <button
               onClick={handleLogout}
               className="flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-semibold text-white/72 transition hover:bg-white/8 hover:text-white"

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, Send, Clock, Globe, ArrowRight } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, Send, Globe, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 import { supabase } from '../services/supabaseClient';
 
 const Contact = () => {
   const [settings, setSettings] = useState(null);
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [status, setStatus] = useState('idle'); // idle, loading, success, error
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -13,6 +15,26 @@ const Contact = () => {
     };
     fetchSettings();
   }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('loading');
+    
+    try {
+      const { error } = await supabase.from('messages').insert([formData]);
+      
+      if (error) throw error;
+      
+      setStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      
+      setTimeout(() => setStatus('idle'), 5000);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 5000);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-scm-cream">
@@ -67,28 +89,34 @@ const Contact = () => {
                   <h3 className="text-3xl font-serif font-bold text-scm-blue mb-4">Send a Message</h3>
                   <p className="text-slate-500 font-medium mb-12">Our ministry team typically responds within 24 hours.</p>
                   
-                  <form className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <form className="grid grid-cols-1 md:grid-cols-2 gap-10" onSubmit={handleSubmit}>
                     <div className="space-y-3">
                        <label className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Full Name</label>
-                       <input type="text" className="w-full px-0 py-4 bg-transparent border-b-2 border-slate-100 focus:outline-none focus:border-scm-accent transition-all font-serif text-lg text-scm-blue placeholder:text-slate-300" placeholder="Your Name" />
+                       <input required type="text" className="w-full px-0 py-4 bg-transparent border-b-2 border-slate-100 focus:outline-none focus:border-scm-accent transition-all font-serif text-lg text-scm-blue placeholder:text-slate-300" placeholder="Your Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
                     </div>
                     <div className="space-y-3">
                        <label className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Email Address</label>
-                       <input type="email" className="w-full px-0 py-4 bg-transparent border-b-2 border-slate-100 focus:outline-none focus:border-scm-accent transition-all font-serif text-lg text-scm-blue placeholder:text-slate-300" placeholder="email@example.com" />
+                       <input required type="email" className="w-full px-0 py-4 bg-transparent border-b-2 border-slate-100 focus:outline-none focus:border-scm-accent transition-all font-serif text-lg text-scm-blue placeholder:text-slate-300" placeholder="email@example.com" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
                     </div>
                     <div className="md:col-span-2 space-y-3">
                        <label className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Subject</label>
-                       <input type="text" className="w-full px-0 py-4 bg-transparent border-b-2 border-slate-100 focus:outline-none focus:border-scm-accent transition-all font-serif text-lg text-scm-blue placeholder:text-slate-300" placeholder="How can we help?" />
+                       <input type="text" className="w-full px-0 py-4 bg-transparent border-b-2 border-slate-100 focus:outline-none focus:border-scm-accent transition-all font-serif text-lg text-scm-blue placeholder:text-slate-300" placeholder="How can we help?" value={formData.subject} onChange={(e) => setFormData({...formData, subject: e.target.value})} />
                     </div>
                     <div className="md:col-span-2 space-y-3">
                        <label className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Message</label>
-                       <textarea rows="4" className="w-full px-0 py-4 bg-transparent border-b-2 border-slate-100 focus:outline-none focus:border-scm-accent transition-all font-serif text-lg text-scm-blue placeholder:text-slate-300 resize-none" placeholder="Write your message here..."></textarea>
+                       <textarea required rows="4" className="w-full px-0 py-4 bg-transparent border-b-2 border-slate-100 focus:outline-none focus:border-scm-accent transition-all font-serif text-lg text-scm-blue placeholder:text-slate-300 resize-none" placeholder="Write your message here..." value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})}></textarea>
                     </div>
                     <div className="md:col-span-2 pt-8">
-                       <button className="btn-primary w-full md:w-auto gold-gradient text-scm-blue border-none shadow-2xl shadow-scm-accent/20 flex items-center justify-center group">
-                          Send Message 
-                          <ArrowRight size={20} className="ml-3 group-hover:translate-x-2 transition-transform" />
+                       <button disabled={status === 'loading' || status === 'success'} className="btn-primary w-full md:w-auto gold-gradient text-scm-blue border-none shadow-2xl shadow-scm-accent/20 flex items-center justify-center group disabled:opacity-70 disabled:cursor-not-allowed">
+                          {status === 'loading' ? (
+                            <><Loader2 size={20} className="mr-3 animate-spin"/> Sending...</>
+                          ) : status === 'success' ? (
+                            <><CheckCircle2 size={20} className="mr-3 text-green-600"/> Message Sent!</>
+                          ) : (
+                            <>Send Message <ArrowRight size={20} className="ml-3 group-hover:translate-x-2 transition-transform" /></>
+                          )}
                        </button>
+                       {status === 'error' && <p className="text-red-500 mt-4 font-sans text-sm font-medium">There was an error sending your message. Please try again later.</p>}
                     </div>
                   </form>
                 </div>

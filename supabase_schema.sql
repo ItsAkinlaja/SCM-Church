@@ -214,3 +214,76 @@ CREATE POLICY "Allow authenticated full access for prayer_requests" ON prayer_re
 
 DROP POLICY IF EXISTS "Allow authenticated full access for testimonies" ON testimonies;
 CREATE POLICY "Allow authenticated full access for testimonies" ON testimonies FOR ALL TO authenticated USING (true);
+
+-- Phase 2 Tables: Messages, Subscribers, Gallery, Sermons
+
+-- Messages Table (Contact Form Integration)
+CREATE TABLE IF NOT EXISTS messages (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  subject TEXT,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Subscribers Table (Newsletter Integration)
+CREATE TABLE IF NOT EXISTS subscribers (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Gallery Table (Photo Management)
+CREATE TABLE IF NOT EXISTS gallery (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT,
+  image_url TEXT NOT NULL,
+  category TEXT DEFAULT 'General',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Sermons Table (Media Block)
+CREATE TABLE IF NOT EXISTS sermons (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT NOT NULL,
+  preacher TEXT NOT NULL,
+  service_type TEXT DEFAULT 'Sunday Service',
+  video_url TEXT NOT NULL,
+  thumbnail_url TEXT,
+  date DATE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS for Phase 2 Tables
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE subscribers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE gallery ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sermons ENABLE ROW LEVEL SECURITY;
+
+-- Phase 2 Public Policies
+DROP POLICY IF EXISTS "Allow public insert for messages" ON messages;
+CREATE POLICY "Allow public insert for messages" ON messages FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public insert for subscribers" ON subscribers;
+CREATE POLICY "Allow public insert for subscribers" ON subscribers FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public read access for gallery" ON gallery;
+CREATE POLICY "Allow public read access for gallery" ON gallery FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public read access for sermons" ON sermons;
+CREATE POLICY "Allow public read access for sermons" ON sermons FOR SELECT USING (true);
+
+-- Phase 2 Admin Policies
+DROP POLICY IF EXISTS "Allow authenticated full access for messages" ON messages;
+CREATE POLICY "Allow authenticated full access for messages" ON messages FOR ALL TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "Allow authenticated full access for subscribers" ON subscribers;
+CREATE POLICY "Allow authenticated full access for subscribers" ON subscribers FOR ALL TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "Allow authenticated full access for gallery" ON gallery;
+CREATE POLICY "Allow authenticated full access for gallery" ON gallery FOR ALL TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "Allow authenticated full access for sermons" ON sermons;
+CREATE POLICY "Allow authenticated full access for sermons" ON sermons FOR ALL TO authenticated USING (true);
