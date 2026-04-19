@@ -62,164 +62,124 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative overflow-hidden bg-[#071126] text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(217,104,88,0.20),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(244,197,66,0.12),transparent_30%)]" />
-      <div className="absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+    <footer className="relative overflow-hidden bg-scm-blue text-white pt-24 pb-12">
+      {/* Premium Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-scm-accent/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-scm-red/10 rounded-full blur-[120px]" />
+      </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 pb-10 pt-16 sm:px-6 lg:px-8 lg:pt-20">
-        <div className="rounded-[2rem] border border-white/10 bg-white/6 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:p-8 lg:p-10">
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#d96858]">Stay Connected</p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-                Worship with us, grow with us, and stay close to ministry life.
-              </h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
-                {settings?.mission ||
-                  'Empowering people for a meaningful life in Christ through worship, the Word, and prayer.'}
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-4 sm:flex-row lg:justify-end">
-              <Link
-                to="/contact"
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#b53a2d] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-[#982b20]"
-              >
-                Contact Us
-              </Link>
-              <Link
-                to="/prayer-request"
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/15 bg-white/6 px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:border-[#d96858]/60 hover:bg-white/10"
-              >
-                Send Prayer Request
-              </Link>
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Newsletter / CTA Section */}
+        <div className="relative mb-20">
+          <div className="gold-gradient p-[1px] rounded-[3rem]">
+            <div className="bg-scm-blue rounded-[3rem] px-8 py-12 sm:px-16 sm:py-20 text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-white/[0.02] pointer-events-none" />
+              <div className="relative z-10 max-w-3xl mx-auto">
+                <span className="inline-block text-scm-accent font-sans font-bold uppercase tracking-[0.4em] mb-6">Experience God With Us</span>
+                <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 leading-tight">
+                  Worship with us, grow with us, and stay close to ministry life.
+                </h2>
+                <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                  <Link to="/contact" className="btn-primary bg-white text-scm-blue hover:bg-scm-cream">
+                    Contact Us
+                  </Link>
+                  <Link to="/prayer-request" className="btn-outline border-white text-white hover:bg-white hover:text-scm-blue">
+                    Prayer Request
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[1.05fr_0.95fr_1fr]">
-          <div className="space-y-6">
-            <div className="flex items-center gap-4">
-              {settings?.ministry_logo ? (
-                <div className="rounded-2xl bg-white/95 px-4 py-3 shadow-lg">
-                  <img src={settings.ministry_logo} alt="Logo" className="h-14 w-auto object-contain sm:h-16" />
-                </div>
-              ) : (
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#b53a2d] shadow-lg">
-                  <span className="text-xl font-black text-white">SCM</span>
-                </div>
-              )}
-              <div>
-                <div className="text-lg font-bold sm:text-xl">
-                  {settings?.ministry_name || 'Successful Christian Missions'}
-                </div>
-                <div className="text-sm font-medium text-white/58">A church family built on worship, word, and prayer.</div>
-              </div>
-            </div>
-
-            <p className="max-w-xl text-sm leading-7 text-white/68 sm:text-base">
-              {settings?.description ||
-                'A Christ-centered ministry committed to discipleship, spiritual formation, and sharing the gospel with clarity and compassion.'}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
+          {/* Brand Column */}
+          <div className="lg:col-span-1">
+            <Link to="/" className="block mb-8">
+              <img 
+                src="https://ik.imagekit.io/scmchurch/WhatsApp_Image_2026-03-27_at_05.29.17-removebg-preview.png?updatedAt=1774595668191" 
+                alt="SCM Church Logo" 
+                className="h-28 w-auto object-contain drop-shadow-2xl brightness-0 invert opacity-90 hover:opacity-100 transition-opacity" 
+              />
+            </Link>
+            <p className="text-slate-400 text-sm leading-relaxed mb-8 font-medium">
+              {settings?.description || "A Christ-centered ministry committed to discipleship, spiritual formation, and sharing the gospel with clarity and compassion."}
             </p>
-
-            {socialLinks.length > 0 && (
-              <div className="flex flex-wrap gap-3">
-                {socialLinks.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <a
-                      key={item.key}
-                      href={item.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label={item.label}
-                      className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/12 bg-white/6 text-white/72 transition hover:-translate-y-1 hover:border-[#d96858]/60 hover:bg-[#b53a2d] hover:text-white"
-                    >
-                      <Icon size={18} />
-                    </a>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-            <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6">
-              <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#d96858]">Quick Links</p>
-              <div className="mt-5 grid gap-3">
-                {quickLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    className="inline-flex min-h-11 items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-white/78 transition hover:bg-white/8 hover:text-white"
+            <div className="flex gap-4">
+              {socialLinks.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <a
+                    key={item.key}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center text-slate-400 hover:bg-scm-accent hover:border-scm-accent hover:text-white transition-all duration-300"
                   >
-                    <span>{link.name}</span>
-                    <ArrowRight size={16} className="text-[#d96858]" />
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6">
-              <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#d96858]">Admin</p>
-              <div className="mt-5">
-                <Link
-                  to="/admin"
-                  className="inline-flex min-h-11 items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-white/72 transition hover:bg-white/8 hover:text-white"
-                >
-                  <span>Open Admin Portal</span>
-                  <ArrowRight size={16} className="text-[#d96858]" />
-                </Link>
-              </div>
+                    <Icon size={18} />
+                  </a>
+                );
+              })}
             </div>
           </div>
 
-          <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 sm:p-7">
-            <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#d96858]">Contact Details</p>
-            <div className="mt-6 space-y-4">
-              <div className="flex items-start gap-4 rounded-2xl border border-white/8 bg-[#0d1b36] px-4 py-4">
-                <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#b53a2d]/15 text-[#ef9487]">
+          {/* Links Columns */}
+          <div>
+            <h4 className="text-white font-serif font-bold text-lg mb-8">Quick Links</h4>
+            <ul className="space-y-4">
+              {quickLinks.map((link) => (
+                <li key={link.path}>
+                  <Link to={link.path} className="text-slate-400 hover:text-scm-accent transition-colors duration-300 text-sm font-medium flex items-center group">
+                    <span className="w-0 group-hover:w-4 h-[1px] bg-scm-accent mr-0 group-hover:mr-3 transition-all duration-300" />
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-serif font-bold text-lg mb-8">Our Mission</h4>
+            <p className="text-slate-400 text-sm leading-relaxed italic font-serif">
+              "{settings?.mission || 'Empowering people for a meaningful life in Christ through worship, the Word, and prayer.'}"
+            </p>
+          </div>
+
+          {/* Contact Column */}
+          <div>
+            <h4 className="text-white font-serif font-bold text-lg mb-8">Visit Us</h4>
+            <div className="space-y-6">
+              <div className="flex gap-4">
+                <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center shrink-0 text-scm-accent">
                   <MapPin size={18} />
                 </div>
-                <div>
-                  <div className="text-xs font-bold uppercase tracking-[0.18em] text-white/42">Address</div>
-                  <div className="mt-2 text-sm leading-6 text-white/80 sm:text-base">
-                    {settings?.address || 'Irebami Street, Off Fajuyi Road, Ile Ife'}
-                  </div>
-                </div>
+                <p className="text-slate-400 text-sm leading-relaxed font-medium">
+                  {settings?.address || 'Irebami Street, Off Fajuyi Road, Ile Ife'}
+                </p>
               </div>
-
-              <div className="flex items-start gap-4 rounded-2xl border border-white/8 bg-[#0d1b36] px-4 py-4">
-                <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#b53a2d]/15 text-[#ef9487]">
+              <div className="flex gap-4">
+                <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center shrink-0 text-scm-accent">
                   <Phone size={18} />
                 </div>
-                <div>
-                  <div className="text-xs font-bold uppercase tracking-[0.18em] text-white/42">Phone</div>
-                  <div className="mt-2 text-sm leading-6 text-white/80 sm:text-base">
-                    {settings?.phone || '+234 803 382 9978'}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4 rounded-2xl border border-white/8 bg-[#0d1b36] px-4 py-4">
-                <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#b53a2d]/15 text-[#ef9487]">
-                  <Mail size={18} />
-                </div>
-                <div>
-                  <div className="text-xs font-bold uppercase tracking-[0.18em] text-white/42">Email</div>
-                  <div className="mt-2 break-words text-sm leading-6 text-white/80 sm:text-base">
-                    {settings?.email || 'info@scm.org.ng'}
-                  </div>
-                </div>
+                <p className="text-slate-400 text-sm font-medium">
+                  {settings?.phone || '+234 803 382 9978'}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/42">
-            &copy; {currentYear} {settings?.ministry_name || 'Successful Christian Missions'}. All rights reserved.
+        {/* Bottom Bar */}
+        <div className="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-slate-500 text-[11px] font-bold uppercase tracking-[0.2em]">
+            © {currentYear} Successful Christian Missions International. All Rights Reserved.
           </p>
+          <div className="flex gap-8">
+            <Link to="/admin" className="text-slate-500 hover:text-white text-[11px] font-bold uppercase tracking-[0.2em] transition-colors">
+              Admin Portal
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

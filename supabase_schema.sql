@@ -147,11 +147,16 @@ INSERT INTO programmes (title, day_of_week, occurrence, time) VALUES
 ON CONFLICT DO NOTHING;
 
 -- Row Level Security (RLS)
--- Enable RLS for new tables
+-- Enable RLS for all tables to fix security vulnerabilities
 ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE programmes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE prayer_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonies ENABLE ROW LEVEL SECURITY;
+ALTER TABLE members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE weekly_materials ENABLE ROW LEVEL SECURITY;
+ALTER TABLE announcements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE leaders ENABLE ROW LEVEL SECURITY;
 
 -- Create policies for public read access
 DROP POLICY IF EXISTS "Allow public read access for settings" ON settings;

@@ -6,13 +6,16 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-      },
       colors: {
-        'scm-blue': '#000080',
-        'scm-red': '#FF0000',
-        'scm-gold': '#FFD700',
+        'scm-blue': '#0a192f', // Elegant Deep Navy
+        'scm-accent': '#d99b38', // Sweet Honey Amber
+        'scm-red': '#e05a5a', // Soft Coral Red
+        'scm-gold': '#f0bf4c', // Warm Soft Gold
+        'scm-cream': '#faf9f6', // Clean Alabaster White
+      },
+      fontFamily: {
+        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        serif: ['Outfit', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         'fade-in': { 

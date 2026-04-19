@@ -1,47 +1,48 @@
 @import "tailwindcss";
 
 @theme {
-  --color-scm-blue: #071126;
-  --color-scm-red: #c94f2d;
-  --color-scm-gold: #f4c542;
+  --color-scm-blue: #0a192f;
+  --color-scm-accent: #d99b38;
+  --color-scm-red: #e05a5a;
+  --color-scm-gold: #f0bf4c;
+  --color-scm-cream: #faf9f6;
+
+  --font-serif: "Outfit", system-ui, sans-serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
 
   --animate-pulse-slow: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-fade-in: fade-in 0.8s ease-out forwards;
-  --animate-scale-up: scale-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  --animate-shake: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  --animate-fade-in: fade-in 1s cubic-bezier(0.21, 0.45, 0.32, 0.9) forwards;
+  --animate-scale-up: scale-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  --animate-reveal: reveal 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
 
   @keyframes pulse-slow {
     0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.05); }
+    50% { opacity: 0.5; transform: scale(1.02); }
   }
 
   @keyframes fade-in {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes scale-up {
-    from { opacity: 0; transform: scale(0.95); }
+    from { opacity: 0; transform: scale(0.98); }
     to { opacity: 1; transform: scale(1); }
   }
 
-  @keyframes shake {
-    10%, 90% { transform: translate3d(-1px, 0, 0); }
-    20%, 80% { transform: translate3d(2px, 0, 0); }
-    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-    40%, 60% { transform: translate3d(4px, 0, 0); }
+  @keyframes reveal {
+    from { transform: scaleX(0); transform-origin: left; }
+    to { transform: scaleX(1); transform-origin: left; }
   }
 }
 
 :root {
-  font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.6;
   font-weight: 400;
   color-scheme: light;
-  color: #111827;
-  background:
-    radial-gradient(circle at top, rgba(244, 197, 66, 0.12), transparent 30%),
-    #f8f4ea;
+  color: #1e293b;
+  background-color: var(--color-scm-cream);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -56,34 +57,39 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top, rgba(244, 197, 66, 0.12), transparent 30%),
-    #f8f4ea;
+  background-color: var(--color-scm-cream);
 }
 
-#root {
-  width: 100%;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: Georgia, "Times New Roman", serif;
-  letter-spacing: -0.03em;
+.premium-card {
+  @apply bg-white hover:-translate-y-2 transition-all duration-500 rounded-2xl overflow-hidden;
+  box-shadow: 0 4px 50px rgba(0, 0, 0, 0.03);
 }
 
-a,
-button,
-input,
-textarea,
-select {
-  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+.glass-nav {
+  @apply bg-white/95 backdrop-blur-3xl;
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.02);
 }
 
-::selection {
-  background: rgba(244, 197, 66, 0.35);
-  color: #071126;
+.gold-gradient {
+  /* Using solid colors or very extremely soft gradients for a cleaner look */
+  background: linear-gradient(135deg, #f0bf4c 0%, #d99b38 100%);
+}
+
+.btn-primary {
+  @apply bg-scm-blue text-white px-8 py-4 rounded-xl font-semibold tracking-wide transition-all duration-300 hover:-translate-y-1 active:scale-95 flex items-center justify-center;
+  box-shadow: 0 10px 30px rgba(10, 25, 47, 0.15);
+}
+.btn-primary:hover {
+  background-color: #122849;
+  box-shadow: 0 15px 35px rgba(10, 25, 47, 0.2);
+}
+
+.btn-outline {
+  @apply border border-scm-blue text-scm-blue px-8 py-4 rounded-xl font-semibold tracking-wide hover:bg-scm-blue hover:text-white transition-all duration-300 active:scale-95;
 }

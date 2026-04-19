@@ -47,150 +47,198 @@ const Events = () => {
     setSelectedEvent(event.resource);
   };
 
-  const upcomingEvents = events.filter(e => moment(e.start).isSameOrAfter(moment(), 'day'));
-  const pastEvents = events.filter(e => moment(e.start).isBefore(moment(), 'day'));
-
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-scm-cream">
       <PageHeader 
         title="Church Calendar" 
-        subtitle="Join us in our upcoming activities and fellowship."
+        subtitle="Join our community in fellowship"
         image="https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
       />
 
-      {/* Calendar Section */}
-      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
-          {loading ? (
-            <div className="h-[600px] flex items-center justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-scm-blue"></div>
-            </div>
-          ) : (
-            <div className="h-[600px] text-gray-700">
-              <Calendar
-                localizer={localizer}
-                events={events}
-                startAccessor="start"
-                endAccessor="end"
-                onSelectEvent={handleSelectEvent}
-                views={['month', 'week', 'agenda']}
-                eventPropGetter={() => ({
-                  style: {
-                    backgroundColor: '#000080',
-                    borderRadius: '6px',
-                    border: 'none',
-                    padding: '4px 8px',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                  }
-                })}
-              />
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Upcoming List Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 flex items-center">
-             <Info className="mr-3 text-scm-red" />
-             Upcoming Events List
-          </h2>
+      {/* Calendar Section - Premium Card */}
+      <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="premium-card bg-white p-8 md:p-12 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-bl-[120px] -z-0" />
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.slice(0, 6).map((evt) => {
-              const event = evt.resource;
-              return (
-                <div key={event.id} className="group bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:border-scm-blue/20 hover:bg-scm-blue/5 transition-all cursor-pointer shadow-sm hover:shadow-lg transform hover:-translate-y-1" onClick={() => setSelectedEvent(event)}>
-                   <div className="flex justify-between items-start mb-6">
-                      <div className="bg-white p-3 rounded-xl shadow-sm text-center min-w-[64px] border border-gray-100 group-hover:border-scm-blue/20">
-                         <div className="text-scm-red font-extrabold text-xl leading-none">
-                            {moment(event.date).format('DD')}
-                         </div>
-                         <div className="text-gray-400 text-xs font-bold uppercase tracking-wider mt-1">
-                            {moment(event.date).format('MMM')}
-                         </div>
-                      </div>
-                      <div className="w-12 h-12 bg-scm-blue/5 rounded-full flex items-center justify-center text-scm-blue group-hover:bg-scm-blue group-hover:text-white transition-colors">
-                         <CalendarIcon size={20} />
-                      </div>
-                   </div>
-                   <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-scm-blue transition-colors line-clamp-1">{event.title}</h3>
-                   <div className="space-y-3 text-gray-500 text-sm font-medium">
-                      <div className="flex items-center">
-                         <Clock size={16} className="mr-2 text-scm-red" />
-                         {event.time ? moment(event.time, 'HH:mm:ss').format('h:mm A') : 'All Day'}
-                      </div>
-                      <div className="flex items-start">
-                         <MapPin size={16} className="mr-2 text-scm-red mt-0.5" />
-                         <span className="line-clamp-1">{event.location || 'Online / TBA'}</span>
-                      </div>
-                   </div>
+          <div className="relative z-10">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+              <div>
+                <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.4em] text-xs mb-3 block">Monthly Overview</span>
+                <h2 className="text-3xl md:text-5xl font-serif font-bold text-scm-blue">Interactive Calendar</h2>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-full border border-slate-100">
+                  <div className="w-3 h-3 rounded-full bg-scm-blue" />
+                  <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-slate-500">Service</span>
                 </div>
-              );
-            })}
-            {events.length === 0 && !loading && (
-              <div className="col-span-3 text-center py-20 text-gray-400 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
-                 No upcoming events scheduled.
+              </div>
+            </div>
+
+            {loading ? (
+              <div className="h-[600px] flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-scm-accent"></div>
+              </div>
+            ) : (
+              <div className="h-[700px] font-sans">
+                <style>{`
+                  .rbc-calendar { font-family: 'Inter', sans-serif; }
+                  .rbc-header { padding: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; font-size: 11px; color: #64748b; border-bottom: 2px solid #f1f5f9; }
+                  .rbc-off-range-bg { background: #f8fafc; }
+                  .rbc-today { background: #fffbeb; }
+                  .rbc-event { transition: all 0.3s ease; }
+                  .rbc-event:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+                  .rbc-toolbar button { font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 11px; border-radius: 99px; padding: 8px 20px; transition: all 0.3s; }
+                  .rbc-toolbar button:hover { background: #0f172a; color: white; }
+                  .rbc-toolbar button.rbc-active { background: #c29a5b; color: white; border-color: #c29a5b; }
+                `}</style>
+                <Calendar
+                  localizer={localizer}
+                  events={events}
+                  startAccessor="start"
+                  endAccessor="end"
+                  onSelectEvent={handleSelectEvent}
+                  views={['month', 'week', 'agenda']}
+                  eventPropGetter={() => ({
+                    style: {
+                      backgroundColor: '#0f172a',
+                      borderRadius: '12px',
+                      border: 'none',
+                      padding: '8px 12px',
+                      fontSize: '12px',
+                      fontWeight: '700',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    }
+                  })}
+                />
               </div>
             )}
           </div>
         </div>
       </section>
 
-      {/* Event Details Modal */}
+      {/* Upcoming List Section - Modern Grid */}
+      <section className="py-32 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.4em] text-xs mb-4 block">Schedule of Events</span>
+            <h2 className="text-4xl md:text-6xl font-serif font-bold text-scm-blue">Upcoming Activities</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {events.length > 0 ? (
+              events.slice(0, 6).map((evt) => {
+                const event = evt.resource;
+                return (
+                  <div key={event.id} className="premium-card group cursor-pointer" onClick={() => setSelectedEvent(event)}>
+                     <div className="p-10">
+                       <div className="flex justify-between items-start mb-10">
+                          <div className="bg-slate-50 px-5 py-4 rounded-2xl shadow-inner text-center min-w-[80px] group-hover:bg-scm-blue transition-colors duration-500">
+                             <div className="text-scm-blue font-serif font-bold text-3xl leading-none group-hover:text-white transition-colors">
+                                {moment(event.date).format('DD')}
+                             </div>
+                             <div className="text-slate-400 text-[10px] font-sans font-bold uppercase tracking-widest mt-2 group-hover:text-scm-accent transition-colors">
+                                {moment(event.date).format('MMM')}
+                             </div>
+                          </div>
+                          <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 group-hover:bg-scm-accent group-hover:text-white transition-all duration-500 shadow-sm">
+                             <CalendarIcon size={20} className="stroke-[1.5px]" />
+                          </div>
+                       </div>
+                       
+                       <h3 className="text-2xl font-serif font-bold text-scm-blue mb-6 group-hover:text-scm-accent transition-colors duration-500 line-clamp-2 leading-tight">
+                         {event.title}
+                       </h3>
+                       
+                       <div className="space-y-4 text-slate-500 text-sm font-medium">
+                          <div className="flex items-center gap-3">
+                             <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-scm-accent group-hover:bg-white transition-colors">
+                               <Clock size={16} />
+                             </div>
+                             <span>{event.time ? moment(event.time, 'HH:mm:ss').format('h:mm A') : 'All Day'}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                             <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-scm-accent group-hover:bg-white transition-colors">
+                               <MapPin size={16} />
+                             </div>
+                             <span className="line-clamp-1">{event.location || 'Main Sanctuary'}</span>
+                          </div>
+                       </div>
+                     </div>
+                  </div>
+                );
+              })
+            ) : (
+              !loading && (
+                <div className="col-span-full text-center py-32 bg-slate-50 rounded-[3rem] border border-dashed border-slate-200">
+                   <p className="text-slate-400 font-serif italic text-xl">No upcoming events scheduled at this time.</p>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Event Details Modal - Premium Reveal */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden relative animate-scale-up">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-scm-blue/90 backdrop-blur-md animate-fade-in">
+          <div className="bg-white rounded-[3rem] shadow-2xl max-w-4xl w-full overflow-hidden relative animate-scale-up border border-white/20">
              <button 
                onClick={() => setSelectedEvent(null)}
-               className="absolute top-6 right-6 p-2 rounded-full bg-gray-100 text-gray-500 hover:bg-scm-red hover:text-white transition-all z-10 shadow-sm"
+               className="absolute top-8 right-8 p-3 rounded-full bg-slate-100 text-slate-500 hover:bg-scm-red hover:text-white transition-all z-20 shadow-sm"
              >
                <X size={20} />
              </button>
 
-             {selectedEvent.banner_url && (
-               <div className="h-64 w-full overflow-hidden bg-scm-blue">
-                 <img src={selectedEvent.banner_url} alt={selectedEvent.title} className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" />
-               </div>
-             )}
-
-             <div className="p-10">
-               <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-scm-blue/10 text-scm-blue text-sm font-bold mb-6">
-                 <CalendarIcon size={16} className="mr-2" />
-                 {moment(selectedEvent.date).format('dddd, MMMM Do YYYY')}
-               </div>
-               
-               <h2 className="text-3xl font-extrabold text-gray-900 mb-6 leading-tight">{selectedEvent.title}</h2>
-               
-               <div className="grid grid-cols-2 gap-8 mb-8 p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-inner">
-                 <div className="flex items-start space-x-3">
-                   <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-scm-red">
-                      <Clock size={20} />
+             <div className="flex flex-col md:flex-row">
+               <div className="md:w-2/5 relative h-64 md:h-auto bg-scm-blue overflow-hidden">
+                 {selectedEvent.banner_url ? (
+                   <img src={selectedEvent.banner_url} alt={selectedEvent.title} className="w-full h-full object-cover opacity-80" />
+                 ) : (
+                   <div className="w-full h-full flex items-center justify-center">
+                     <CalendarIcon size={64} className="text-white/20" />
                    </div>
-                   <div>
-                      <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Time</div>
-                      <div className="text-gray-900 font-bold">{selectedEvent.time ? moment(selectedEvent.time, 'HH:mm:ss').format('h:mm A') : 'All Day'}</div>
-                   </div>
-                 </div>
-                 <div className="flex items-start space-x-3">
-                   <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-scm-red">
-                      <MapPin size={20} />
-                   </div>
-                   <div>
-                      <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Location</div>
-                      <div className="text-gray-900 font-bold">{selectedEvent.location || 'TBA'}</div>
-                   </div>
-                 </div>
+                 )}
+                 <div className="absolute inset-0 bg-gradient-to-t from-scm-blue to-transparent md:bg-gradient-to-r" />
                </div>
 
-               <div className="text-gray-600 leading-relaxed text-lg">
-                 <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center">
-                    <Info size={16} className="mr-2" />
-                    Event Description
-                 </h4>
-                 {selectedEvent.description || 'Join us for this amazing fellowship opportunity!'}
+               <div className="md:w-3/5 p-12 lg:p-16">
+                 <div className="inline-flex items-center px-5 py-2 rounded-full bg-scm-accent/10 text-scm-accent text-xs font-bold uppercase tracking-widest mb-8">
+                   <CalendarIcon size={14} className="mr-2" />
+                   {moment(selectedEvent.date).format('MMMM Do, YYYY')}
+                 </div>
+                 
+                 <h2 className="text-3xl md:text-5xl font-serif font-bold text-scm-blue mb-8 leading-tight">{selectedEvent.title}</h2>
+                 
+                 <div className="grid grid-cols-2 gap-8 mb-10">
+                   <div className="flex items-center gap-4">
+                     <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-scm-accent shadow-inner">
+                        <Clock size={20} />
+                     </div>
+                     <div>
+                        <div className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-widest mb-1">Time</div>
+                        <div className="text-scm-blue font-serif font-bold">{selectedEvent.time ? moment(selectedEvent.time, 'HH:mm:ss').format('h:mm A') : 'All Day'}</div>
+                     </div>
+                   </div>
+                   <div className="flex items-center gap-4">
+                     <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-scm-accent shadow-inner">
+                        <MapPin size={20} />
+                     </div>
+                     <div>
+                        <div className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-widest mb-1">Location</div>
+                        <div className="text-scm-blue font-serif font-bold">{selectedEvent.location || 'TBA'}</div>
+                     </div>
+                   </div>
+                 </div>
+
+                 <div className="space-y-4">
+                   <h4 className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center">
+                      <Info size={14} className="mr-2" />
+                      About This Event
+                   </h4>
+                   <p className="text-slate-600 font-medium leading-relaxed text-lg italic font-serif">
+                     "{selectedEvent.description || 'Join us for this amazing fellowship opportunity! We look forward to seeing you there.'}"
+                   </p>
+                 </div>
                </div>
              </div>
           </div>
