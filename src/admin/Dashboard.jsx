@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../services/supabaseClient';
+import { useAdminStats } from '../hooks/useAdminStats';
 import {
   ArrowRight,
   Calendar,
@@ -18,42 +18,7 @@ import {
 } from 'lucide-react';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({
-    members: 0,
-    events: 0,
-    pamphlets: 0,
-    announcements: 0,
-    leaders: 0,
-    programmes: 0,
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      setLoading(true);
-
-      const [members, events, pamphlets, announcements, leaders, programmes] = await Promise.all([
-        supabase.from('members').select('*', { count: 'exact', head: true }),
-        supabase.from('events').select('*', { count: 'exact', head: true }),
-        supabase.from('weekly_materials').select('*', { count: 'exact', head: true }),
-        supabase.from('announcements').select('*', { count: 'exact', head: true }),
-        supabase.from('leaders').select('*', { count: 'exact', head: true }),
-        supabase.from('programmes').select('*', { count: 'exact', head: true }),
-      ]);
-
-      setStats({
-        members: members.count || 0,
-        events: events.count || 0,
-        pamphlets: pamphlets.count || 0,
-        announcements: announcements.count || 0,
-        leaders: leaders.count || 0,
-        programmes: programmes.count || 0,
-      });
-      setLoading(false);
-    };
-
-    fetchStats();
-  }, []);
+  const { stats, loading } = useAdminStats();
 
   const statCards = [
     {

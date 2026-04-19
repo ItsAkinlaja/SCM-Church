@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { Image as ImageIcon, Trash2, Plus, X, UploadCloud, Loader2, CheckCircle2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import { IKContext, IKUpload } from 'imagekitio-react';
 import { imagekitConfig, authenticator, IMAGEKIT_FOLDER_PATH } from '../services/imagekit';
 
@@ -34,7 +35,7 @@ const AdminGallery = () => {
     
     // Simple URL validation
     if (!formData.image_url.startsWith('http')) {
-      alert("Please provide a valid image URL starting with http:// or https://");
+      toast.error("Please provide a valid image URL starting with http:// or https://");
       setSaving(false);
       return;
     }
@@ -46,8 +47,9 @@ const AdminGallery = () => {
       setFormData({ title: '', image_url: '', category: 'General' });
       setUploading(false);
       fetchGallery();
+      toast.success("Image added successfully");
     } else {
-      alert("Error adding image: " + error.message);
+      toast.error("Error adding image: " + error.message);
     }
     setSaving(false);
   };
@@ -57,6 +59,9 @@ const AdminGallery = () => {
       const { error } = await supabase.from('gallery').delete().eq('id', id);
       if (!error) {
         setImages(images.filter(img => img.id !== id));
+        toast.success("Image deleted");
+      } else {
+        toast.error("Failed to delete image");
       }
     }
   };
@@ -131,7 +136,7 @@ const AdminGallery = () => {
                             }}
                             onError={(err) => {
                               console.error(err);
-                              alert("Upload failed. Verify ImageKit keys and permissions.");
+                              toast.error("Upload failed. Verify ImageKit keys and permissions.");
                               setUploading(false);
                             }}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"

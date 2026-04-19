@@ -3,6 +3,7 @@ import { supabase } from '../services/supabaseClient';
 import { IKContext, IKUpload } from 'imagekitio-react';
 import { imagekitConfig, IMAGEKIT_FOLDER_PATH, authenticator } from '../services/imagekit';
 import { Calendar, Plus, Edit2, Trash2, Search, X, Save, Clock, MapPin, Image, Loader2, CalendarIcon, ChevronRight, Sparkles } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const AdminEvents = () => {
   const [events, setEvents] = useState([]);
@@ -44,7 +45,7 @@ const AdminEvents = () => {
   const handleUploadError = (err) => {
     console.error('Upload Error:', err);
     setUploading(false);
-    alert('Upload failed. Please check your ImageKit configuration.');
+    toast.error('Upload failed. Please check your ImageKit configuration.');
   };
 
   const handleSubmit = async (e) => {
@@ -67,6 +68,9 @@ const AdminEvents = () => {
       if (!error) {
         setShowModal(false);
         fetchEvents();
+        toast.success("Event updated successfully!");
+      } else {
+        toast.error("Failed to update event: " + error.message);
       }
     } else {
       const { error } = await supabase
@@ -75,6 +79,9 @@ const AdminEvents = () => {
       if (!error) {
         setShowModal(false);
         fetchEvents();
+        toast.success("Event created successfully!");
+      } else {
+        toast.error("Failed to create event: " + error.message);
       }
     }
     setSubmitting(false);
@@ -92,6 +99,9 @@ const AdminEvents = () => {
           .select('*')
           .order('date', { ascending: true });
         if (data) setEvents(data);
+        toast.success("Event deleted successfully!");
+      } else {
+        toast.error("Failed to delete event: " + error.message);
       }
     }
   };

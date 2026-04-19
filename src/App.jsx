@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from './services/supabaseClient';
+import { Toaster } from 'react-hot-toast';
 
 // Layouts
 import MainLayout from './layouts/MainLayout';
@@ -64,6 +65,7 @@ function App() {
 
   return (
     <Router>
+      <Toaster position="top-right" />
       <Routes>
         {/* Public Routes */}
         <Route element={<MainLayout />}>

@@ -3,6 +3,7 @@ import { supabase } from '../services/supabaseClient';
 import { IKContext, IKUpload } from 'imagekitio-react';
 import { imagekitConfig, IMAGEKIT_FOLDER_PATH, authenticator } from '../services/imagekit';
 import { FileText, Plus, Edit2, Trash2, Search, X, Save, Calendar, Download, FilePlus, Loader2, Sparkles, FileSearch, ArrowRight } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const AdminPamphlets = () => {
   const [pamphlets, setPamphlets] = useState([]);
@@ -43,7 +44,7 @@ const AdminPamphlets = () => {
   const handleUploadError = (err) => {
     console.error('Upload Error:', err);
     setUploading(false);
-    alert('File upload failed. Please check your ImageKit configuration.');
+    toast.error('File upload failed. Please check your ImageKit configuration.');
   };
 
   const handleSubmit = async (e) => {
@@ -66,6 +67,9 @@ const AdminPamphlets = () => {
       if (!error) {
         setShowModal(false);
         fetchPamphlets();
+        toast.success('Study guide updated successfully!');
+      } else {
+         toast.error('Failed to update study guide: ' + error.message);
       }
     } else {
       const { error } = await supabase
@@ -74,6 +78,9 @@ const AdminPamphlets = () => {
       if (!error) {
         setShowModal(false);
         fetchPamphlets();
+        toast.success('Study guide published successfully!');
+      } else {
+         toast.error('Failed to publish study guide: ' + error.message);
       }
     }
     setSubmitting(false);
@@ -91,6 +98,9 @@ const AdminPamphlets = () => {
           .select('*')
           .order('week_date', { ascending: false });
         if (data) setPamphlets(data);
+        toast.success('Study guide deleted successfully!');
+      } else {
+         toast.error('Failed to delete study guide: ' + error.message);
       }
     }
   };

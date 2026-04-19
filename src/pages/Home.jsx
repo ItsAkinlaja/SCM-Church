@@ -16,98 +16,71 @@ import {
   Play,
   Users,
 } from 'lucide-react';
+import { useHomeData } from '../hooks/useHomeData';
+import SEO from '../components/SEO';
+import * as Icons from 'lucide-react';
+import { IKImage, IKContext } from 'imagekitio-react';
+import { imagekitConfig } from '../services/imagekit';
 
 const formatDate = (value, options) =>
   new Date(value).toLocaleDateString(undefined, options);
 
 const Home = () => {
-  const [latestPamphlet, setLatestPamphlet] = useState(null);
-  const [upcomingEvents, setUpcomingEvents] = useState([]);
-  const [announcements, setAnnouncements] = useState([]);
-  const [programmes, setProgrammes] = useState([]);
-  const [testimonies, setTestimonies] = useState([]);
-  const [go, setGo] = useState(null);
-  const [latestSermon, setLatestSermon] = useState(null);
+  const {
+    latestPamphlet,
+    upcomingEvents,
+    announcements,
+    programmes,
+    testimonies,
+    go,
+    latestSermon,
+    settings,
+    loading,
+    error
+  } = useHomeData();
+
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Use dynamic slides from DB or fallback
+  const slides = settings?.hero_slides || [
+    {
+      url: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073&auto=format&fit=crop',
+      title: 'A beautiful church home for worship, word, and prayer.',
+      subtitle: 'Successful Christian Missions International is a Pentecostal church founded in Ile-Ife, Nigeria.',
+      tag: 'Successful Christian Missions'
+    }
+  ];
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 3); // slides.length is 3
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 6000);
     return () => clearInterval(slideInterval);
-  }, []);
-
-  useEffect(() => {
-    const fetchHomeData = async () => {
-      try {
-        const responses = await Promise.all([
-          supabase.from('programmes').select('*').order('occurrence', { ascending: false }),
-          supabase.from('weekly_materials').select('*').order('week_date', { ascending: false }).limit(1),
-          supabase.from('events').select('*').gte('date', new Date().toISOString().split('T')[0]).order('date', { ascending: true }).limit(3),
-          supabase.from('announcements').select('*').order('created_at', { ascending: false }).limit(3),
-          supabase.from('testimonies').select('*').eq('is_approved', true).order('created_at', { ascending: false }).limit(3),
-          supabase.from('leaders').select('*').ilike('role', '%General Overseer%').limit(1).single(),
-          supabase.from('sermons').select('*').order('date', { ascending: false }).limit(1)
-        ]);
-
-        if (responses[0].data) setProgrammes(responses[0].data);
-        if (responses[1].data?.length) setLatestPamphlet(responses[1].data[0]);
-        setUpcomingEvents(responses[2].data || []);
-        setAnnouncements(responses[3].data || []);
-        setTestimonies(responses[4].data || []);
-        if (responses[5].data) setGo(responses[5].data);
-        if (responses[6].data?.length) setLatestSermon(responses[6].data[0]);
-      } catch (err) {
-        console.error('Error fetching home data:', err);
-      }
-    };
-
-    fetchHomeData();
-  }, []);
+  }, [slides.length]);
 
   const weeklyProgs = programmes.filter((programme) => programme.occurrence === 'Weekly');
   const monthlyProgs = programmes.filter((programme) => programme.occurrence === 'Monthly');
 
-  const pillars = [
+  const activePillars = settings?.pillars || [
     {
       title: 'Worship',
-      description: 'Reverent gatherings designed for heartfelt praise, spiritual renewal, and genuine fellowship.',
-      icon: Landmark,
-    },
-    {
-      title: 'Word',
-      description: 'Bible-based teaching that forms disciples, strengthens conviction, and builds mature believers.',
-      icon: BookOpenText,
-    },
-    {
-      title: 'Prayer',
-      description: 'A praying church where burdens are shared, faith is stirred, and lives are lifted before God.',
-      icon: HeartHandshake,
-    },
+      description: 'Reverent gatherings designed for heartfelt praise.',
+      icon: 'Landmark',
+    }
   ];
 
-  const slides = [
-    {
-      url: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073&auto=format&fit=crop',
-      title: 'A beautiful church home for worship, word, and prayer.',
-      subtitle: 'Successful Christian Missions International is a Pentecostal church founded in Ile-Ife, Nigeria, dedicated to ministering the gospel through Worship, Word, and Prayer.',
-      tag: 'Successful Christian Missions'
-    },
-    {
-      url: 'https://ik.imagekit.io/scmchurch/daniel-schaffer-arwwg4geM2A-unsplash.jpg',
-      title: 'Built on the solid rock of God\'s eternal word.',
-      subtitle: 'Our teachings center on salvation, holiness, the kingdom of God, peace, love, and hope as revealed by the Holy Spirit.',
-      tag: 'Our Vision'
-    },
-    {
-      url: 'https://ik.imagekit.io/scmchurch/jametlene-reskp-YUVZOGlHfdk-unsplash.jpg',
-      title: 'United in prayer, strengthened in fellowship.',
-      subtitle: 'Join a community of believers dedicated to kingdom expansion and spiritual excellence since July 18, 1999.',
-      tag: 'Our Mission'
-    },
-  ];
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-scm-cream gap-4">
+         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-scm-blue"></div>
+         <span className="font-bold text-scm-blue">Loading Website...</span>
+      </div>
+    );
+  }
 
   return (
+    <IKContext urlEndpoint={imagekitConfig.urlEndpoint} publicKey={imagekitConfig.publicKey}>
+    <SEO title="Welcome Home" />
     <div className="bg-scm-cream text-slate-900 overflow-x-hidden">
       {/* Premium Hero Section */}
       <section className="relative min-h-[100dvh] w-full bg-scm-blue text-white">
@@ -175,49 +148,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Plan A Visit - New Visitor Module */}
-      <section className="py-12 md:py-24 bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="bg-[#050b14] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden flex flex-col-reverse md:flex-row shadow-2xl">
-            <div className="md:w-1/2 p-8 sm:p-12 lg:p-20 flex flex-col justify-center text-white">
-              <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-4 block">New Here?</span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-4 md:mb-6 leading-tight">Plan Your Visit This Sunday</h2>
-              <p className="text-slate-400 font-sans leading-relaxed mb-8 md:mb-10 max-w-md text-sm md:text-base">
-                We'd love to host you. Join us for a powerful time of worship, community, and the timeless truth of God's Word. 
-              </p>
-              <div className="space-y-6 mb-10 font-sans text-[13px]">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center shrink-0">
-                    <Clock3 size={16} className="text-scm-accent" />
-                  </div>
-                  <div>
-                    <strong className="block text-white mb-0.5">Service Times</strong>
-                    <span className="text-slate-400">Sundays at 8:30 AM</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center shrink-0">
-                    <MapPin size={16} className="text-scm-accent" />
-                  </div>
-                  <div>
-                    <strong className="block text-white mb-0.5">Location</strong>
-                    <span className="text-slate-400">Irebami Street, Ile Ife</span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <Link to="/contact" className="bg-white text-[#050b14] px-8 py-5 inline-flex items-center font-sans font-bold uppercase tracking-widest text-[11px] hover:bg-scm-accent hover:text-white transition-colors">
-                  Get Directions <ArrowRight size={14} className="ml-3" />
-                </Link>
-              </div>
-            </div>
-            <div className="md:w-1/2 relative min-h-[250px] md:min-h-[400px]">
-              <img src="https://images.unsplash.com/photo-1544427920-c49ccfb85579?auto=format&fit=crop&q=80" alt="Welcome Team" className="absolute inset-0 w-full h-full object-cover" />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Pillars Section - Modern Card Layout */}
       <section className="py-12 md:py-16 relative bg-scm-cream/50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -228,12 +158,12 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 md:gap-10">
-            {pillars.map((pillar, idx) => {
-              const Icon = pillar.icon;
+            {activePillars.map((pillar, idx) => {
+              const IconComponent = Icons[pillar.icon] || Icons.Landmark;
               return (
                 <div key={idx} className="premium-card group p-8 md:p-12 flex flex-col items-center text-center">
                   <div className="w-16 h-16 rounded-full bg-scm-light text-scm-blue flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-scm-blue group-hover:text-white transition-all duration-500">
-                    <Icon size={28} className="stroke-[1.5px]" />
+                    <IconComponent size={28} className="stroke-[1.5px]" />
                   </div>
                   <h3 className="text-2xl font-serif font-bold mb-4">{pillar.title}</h3>
                   <p className="text-slate-500 leading-relaxed font-medium">
@@ -467,7 +397,51 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Plan A Visit - New Visitor Module */}
+      <section className="py-12 md:py-24 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="bg-[#050b14] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden flex flex-col-reverse md:flex-row shadow-2xl">
+            <div className="md:w-1/2 p-8 sm:p-12 lg:p-20 flex flex-col justify-center text-white">
+              <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-4 block">New Here?</span>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-4 md:mb-6 leading-tight">Plan Your Visit This Sunday</h2>
+              <p className="text-slate-400 font-sans leading-relaxed mb-8 md:mb-10 max-w-md text-sm md:text-base">
+                We'd love to host you. Join us for a powerful time of worship, community, and the timeless truth of God's Word. 
+              </p>
+              <div className="space-y-6 mb-10 font-sans text-[13px]">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center shrink-0">
+                    <Clock3 size={16} className="text-scm-accent" />
+                  </div>
+                  <div>
+                    <strong className="block text-white mb-0.5">Service Times</strong>
+                    <span className="text-slate-400">Sundays at 8:30 AM</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center shrink-0">
+                    <MapPin size={16} className="text-scm-accent" />
+                  </div>
+                  <div>
+                    <strong className="block text-white mb-0.5">Location</strong>
+                    <span className="text-slate-400">Irebami Street, Ile Ife</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <Link to="/contact" className="bg-white text-[#050b14] px-8 py-5 inline-flex items-center font-sans font-bold uppercase tracking-widest text-[11px] hover:bg-scm-accent hover:text-white transition-colors">
+                  Get Directions <ArrowRight size={14} className="ml-3" />
+                </Link>
+              </div>
+            </div>
+            <div className="md:w-1/2 relative min-h-[250px] md:min-h-[400px]">
+              <img src="https://images.unsplash.com/photo-1544427920-c49ccfb85579?auto=format&fit=crop&q=80" alt="Welcome Team" className="absolute inset-0 w-full h-full object-cover" />
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
+    </IKContext>
   );
 };
 

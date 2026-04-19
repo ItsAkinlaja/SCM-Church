@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { Video, Trash2, Plus, X, UploadCloud, Loader2, PlayCircle } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { IKContext, IKUpload } from 'imagekitio-react';
+import { imagekitConfig, IMAGEKIT_FOLDER_PATH, authenticator } from '../services/imagekit';
 
 const Sermons = () => {
   const [sermons, setSermons] = useState([]);
@@ -15,6 +18,7 @@ const Sermons = () => {
     date: new Date().toISOString().split('T')[0]
   });
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const fetchSermons = async () => {
     setLoading(true);
@@ -48,8 +52,9 @@ const Sermons = () => {
         date: new Date().toISOString().split('T')[0]
       });
       fetchSermons();
+      toast.success("Sermon added successfully!");
     } else {
-      alert("Error adding sermon: " + error.message);
+      toast.error("Error adding sermon: " + error.message);
     }
     setSaving(false);
   };
@@ -59,6 +64,9 @@ const Sermons = () => {
       const { error } = await supabase.from('sermons').delete().eq('id', id);
       if (!error) {
         setSermons(sermons.filter(s => s.id !== id));
+        toast.success("Sermon deleted successfully!");
+      } else {
+        toast.error("Failed to delete sermon: " + error.message);
       }
     }
   };
@@ -130,8 +138,34 @@ const Sermons = () => {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-gray-700 uppercase tracking-widest mb-2">Custom Thumbnail URL (Optional)</label>
-                <input type="url" value={formData.thumbnail_url} onChange={e => setFormData({...formData, thumbnail_url: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-scm-blue" placeholder="Will auto-fetch from YouTube if empty" />
+                <label className="block text-sm font-bold text-gray-700 uppercase tracking-widest mb-2">Custom Thumbnail (Optional)</label>
+                <div className="relative group/upload">
+                   <IKContext {...imagekitConfig} authenticator={authenticator}>
+                     <IKUpload
+                       fileName="sermon_thumbnail.jpg"
+                       folder={IMAGEKIT_FOLDER_PATH}
+                       onUploadStart={() => setUploading(true)}
+                       onSuccess={(res) => {
+                         setFormData({...formData, thumbnail_url: res.url});
+                         setUploading(false);
+                         toast.success('Thumbnail uploaded successfully!');
+                       }}
+                       onError={(err) => {
+                         console.error(err);
+                         setUploading(false);
+                         toast.error('Thumbnail upload failed.');
+                       }}
+                       className="hidden"
+                       id="thumbnail-upload"
+                     />
+                   </IKContext>
+                   <label htmlFor="thumbnail-upload" className="w-full flex items-center px-4 py-3 bg-gray-50 border border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-scm-blue hover:bg-scm-blue/5 transition-all group-focus-within:border-scm-blue">
+                     {uploading ? <Loader2 size={20} className="animate-spin text-scm-blue mr-3" /> : <UploadCloud size={20} className="text-gray-400 group-hover:text-scm-blue mr-3 transition-colors" />}
+                     <span className="font-bold text-gray-400 group-hover:text-scm-blue transition-colors text-sm">
+                        {formData.thumbnail_url ? 'Change Thumbnail Image' : 'Upload Custom Thumbnail (Auto-fetches from YouTube if empty)'}
+                     </span>
+                   </label>
+                </div>
               </div>
 
               {formData.thumbnail_url && (

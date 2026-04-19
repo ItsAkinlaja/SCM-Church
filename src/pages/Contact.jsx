@@ -127,13 +127,33 @@ const Contact = () => {
         </div>
       </section>
 
+
+
+      {/* Google Map Section - moved just after contact form */}
+      <section className="py-12 bg-transparent flex justify-center items-center">
+        <div className="w-full max-w-5xl px-4">
+          <h3 className="text-2xl font-serif font-bold text-scm-blue mb-6 text-center">Find Us Here</h3>
+          <div className="rounded-3xl overflow-hidden shadow-2xl border border-slate-100">
+            <iframe
+              title="SCM Church Location Map"
+              src="https://www.google.com/maps?q=Irebami+Street,+Off+Fajuyi+Road,+Ile+Ife,+Osun+State,+Nigeria&output=embed"
+              width="100%"
+              height="400"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
       {/* Social Media Section - Elegant Dark */}
       <section className="py-32 bg-scm-blue text-white overflow-hidden relative">
         <div className="absolute inset-0 bg-white/[0.02] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.4em] text-xs mb-6 block">Stay Connected</span>
           <h2 className="text-4xl md:text-6xl font-serif font-bold mb-20 leading-tight">Join Our Global Community</h2>
-          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
             {[
               { icon: Facebook, name: 'Facebook', handle: '@SCMInternational' },
@@ -142,11 +162,11 @@ const Contact = () => {
               { icon: Globe, name: 'Website', handle: 'scmchurch.org' },
             ].map((social, idx) => (
               <div key={idx} className="group cursor-pointer">
-                 <div className="w-24 h-24 bg-white/5 rounded-[2rem] flex items-center justify-center mb-8 mx-auto group-hover:bg-scm-accent group-hover:-translate-y-3 transition-all duration-500 shadow-xl border border-white/10">
-                    <social.icon size={36} className="stroke-[1.5px]" />
-                 </div>
-                 <h4 className="text-xl font-serif font-bold mb-2">{social.name}</h4>
-                 <p className="text-slate-400 font-sans font-bold text-[10px] uppercase tracking-widest group-hover:text-scm-accent transition-colors">{social.handle}</p>
+                <div className="w-24 h-24 bg-white/5 rounded-[2rem] flex items-center justify-center mb-8 mx-auto group-hover:bg-scm-accent group-hover:-translate-y-3 transition-all duration-500 shadow-xl border border-white/10">
+                  <social.icon size={36} className="stroke-[1.5px]" />
+                </div>
+                <h4 className="text-xl font-serif font-bold mb-2">{social.name}</h4>
+                <p className="text-slate-400 font-sans font-bold text-[10px] uppercase tracking-widest group-hover:text-scm-accent transition-colors">{social.handle}</p>
               </div>
             ))}
           </div>

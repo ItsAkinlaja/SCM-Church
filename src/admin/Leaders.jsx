@@ -3,6 +3,7 @@ import { supabase } from '../services/supabaseClient';
 import { IKContext, IKUpload } from 'imagekitio-react';
 import { imagekitConfig, IMAGEKIT_FOLDER_PATH, authenticator } from '../services/imagekit';
 import { UserCircle, Plus, Edit2, Trash2, Search, X, Save, ShieldCheck, Briefcase, Building2, Image, Loader2, Sparkles, UserPlus } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const AdminLeaders = () => {
   const [leaders, setLeaders] = useState([]);
@@ -42,7 +43,7 @@ const AdminLeaders = () => {
   const handleUploadError = (err) => {
     console.error('Upload Error:', err);
     setUploading(false);
-    alert('Photo upload failed. Please check your ImageKit configuration.');
+    toast.error('Photo upload failed. Please check your ImageKit configuration.');
   };
 
   const handleSubmit = async (e) => {
@@ -65,6 +66,9 @@ const AdminLeaders = () => {
       if (!error) {
         setShowModal(false);
         fetchLeaders();
+        toast.success('Leader profile updated successfully!');
+      } else {
+         toast.error('Failed to update leader: ' + error.message);
       }
     } else {
       const { error } = await supabase
@@ -73,6 +77,9 @@ const AdminLeaders = () => {
       if (!error) {
         setShowModal(false);
         fetchLeaders();
+        toast.success('Leader appointed successfully!');
+      } else {
+         toast.error('Failed to appoint leader: ' + error.message);
       }
     }
     setSubmitting(false);
@@ -90,6 +97,9 @@ const AdminLeaders = () => {
           .select('*')
           .order('created_at', { ascending: true });
         if (data) setLeaders(data);
+        toast.success('Leader profile deleted successfully!');
+      } else {
+         toast.error('Failed to delete leader: ' + error.message);
       }
     }
   };

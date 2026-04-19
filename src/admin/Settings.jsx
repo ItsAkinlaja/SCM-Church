@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { Settings as SettingsIcon, Save, Globe, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Loader2, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { IKContext, IKUpload } from 'imagekitio-react';
+import { imagekitConfig, IMAGEKIT_FOLDER_PATH, authenticator } from '../services/imagekit';
 
 const Settings = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingSlide, setUploadingSlide] = useState(null);
   const [settings, setSettings] = useState({
     ministry_name: '',
     ministry_logo: 'https://ik.imagekit.io/scmchurch/WhatsApp_Image_2026-03-27_at_05.29.17-removebg-preview.png',
@@ -19,7 +24,9 @@ const Settings = () => {
       twitter: '',
       instagram: '',
       youtube: ''
-    }
+    },
+    pillars: [],
+    hero_slides: []
   });
 
   useEffect(() => {
@@ -49,9 +56,9 @@ const Settings = () => {
       .eq('id', settings.id);
 
     if (!error) {
-      alert('Settings updated successfully!');
+      toast.success('Settings updated successfully!');
     } else {
-      alert('Error updating settings: ' + error.message);
+      toast.error('Error updating settings: ' + error.message);
     }
     setSubmitting(false);
   };
@@ -130,10 +137,127 @@ const Settings = () => {
                   className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:outline-none focus:border-scm-blue focus:ring-4 focus:ring-scm-blue/5 transition-all font-bold text-gray-900"
                   value={settings.description}
                   onChange={(e) => setSettings({ ...settings, description: e.target.value })}
-                  placeholder="Describe the ministry..."
                 />
               </div>
             </div>
+            
+            <div className="border-t border-gray-100 pt-10 grid grid-cols-1 gap-10">
+              <h4 className="text-xl font-black text-gray-900 border-l-4 border-scm-blue pl-4">Mission Pillars</h4>
+              {(settings.pillars || []).map((pillar, idx) => (
+                <div key={`pillar-${idx}`} className="bg-gray-50 p-6 rounded-3xl border border-gray-100 space-y-4">
+                   <div className="flex justify-between items-center mb-2">
+                     <span className="text-xs font-black uppercase tracking-widest text-gray-400">Pillar {idx + 1}</span>
+                   </div>
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <input
+                       className="px-4 py-3 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-bold text-sm"
+                       value={pillar.title}
+                       onChange={(e) => {
+                         const newPillars = [...settings.pillars];
+                         newPillars[idx].title = e.target.value;
+                         setSettings({ ...settings, pillars: newPillars });
+                       }}
+                       placeholder="Title"
+                     />
+                     <input
+                       className="px-4 py-3 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-bold text-sm"
+                       value={pillar.icon}
+                       onChange={(e) => {
+                         const newPillars = [...settings.pillars];
+                         newPillars[idx].icon = e.target.value;
+                         setSettings({ ...settings, pillars: newPillars });
+                       }}
+                       placeholder="Lucide Icon Name"
+                     />
+                     <textarea
+                       className="px-4 py-3 sm:col-span-2 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-medium text-sm"
+                       value={pillar.description}
+                       onChange={(e) => {
+                         const newPillars = [...settings.pillars];
+                         newPillars[idx].description = e.target.value;
+                         setSettings({ ...settings, pillars: newPillars });
+                       }}
+                       placeholder="Description"
+                       rows="2"
+                     />
+                   </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t border-gray-100 pt-10 grid grid-cols-1 gap-10">
+              <h4 className="text-xl font-black text-gray-900 border-l-4 border-scm-blue pl-4">Hero Slides</h4>
+              {(settings.hero_slides || []).map((slide, idx) => (
+                <div key={`slide-${idx}`} className="bg-gray-50 p-6 rounded-3xl border border-gray-100 space-y-4">
+                   <div className="flex justify-between items-center mb-2">
+                     <span className="text-xs font-black uppercase tracking-widest text-gray-400">Slide {idx + 1}</span>
+                   </div>
+                   <div className="grid grid-cols-1 gap-4">
+                     <input
+                       className="px-4 py-3 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-bold text-sm"
+                       value={slide.title}
+                       onChange={(e) => {
+                         const newSlides = [...settings.hero_slides];
+                         newSlides[idx].title = e.target.value;
+                         setSettings({ ...settings, hero_slides: newSlides });
+                       }}
+                       placeholder="Main Title"
+                     />
+                     <input
+                       className="px-4 py-3 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-bold text-sm"
+                       value={slide.tag}
+                       onChange={(e) => {
+                         const newSlides = [...settings.hero_slides];
+                         newSlides[idx].tag = e.target.value;
+                         setSettings({ ...settings, hero_slides: newSlides });
+                       }}
+                       placeholder="Small Tag / Overline"
+                     />
+                     <div className="relative">
+                        <IKContext {...imagekitConfig} authenticator={authenticator}>
+                          <IKUpload
+                            fileName={`hero_slide_${idx}.jpg`}
+                            folder={IMAGEKIT_FOLDER_PATH}
+                            onUploadStart={() => setUploadingSlide(idx)}
+                            onSuccess={(res) => {
+                              const newSlides = [...settings.hero_slides];
+                              newSlides[idx].url = res.url;
+                              setSettings({ ...settings, hero_slides: newSlides });
+                              setUploadingSlide(null);
+                              toast.success(`Slide ${idx + 1} image uploaded!`);
+                            }}
+                            onError={(err) => {
+                              console.error(err);
+                              setUploadingSlide(null);
+                              toast.error(`Failed to upload slide ${idx + 1} image.`);
+                            }}
+                            className="hidden"
+                            id={`slide-upload-${idx}`}
+                          />
+                        </IKContext>
+                        <label htmlFor={`slide-upload-${idx}`} className="w-full flex justify-center items-center px-4 py-3 bg-white border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-scm-blue hover:bg-scm-blue/5 transition-all">
+                          {uploadingSlide === idx ? <Loader2 size={16} className="animate-spin text-scm-blue mr-2" /> : <ImageIcon size={16} className="text-gray-400 mr-2 transition-colors" />}
+                          <span className="font-bold text-gray-500 text-sm">
+                             {slide.url ? 'Change Slide Image' : 'Upload Slide Image'}
+                          </span>
+                        </label>
+                     </div>
+                     <textarea
+                       className="px-4 py-3 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-medium text-sm"
+                       value={slide.subtitle}
+                       onChange={(e) => {
+                         const newSlides = [...settings.hero_slides];
+                         newSlides[idx].subtitle = e.target.value;
+                         setSettings({ ...settings, hero_slides: newSlides });
+                       }}
+                       placeholder="Subtitle describing the slide"
+                       rows="2"
+                     />
+                   </div>
+                </div>
+              ))}
+            </div>
+
           </div>
 
           {/* Contact Information */}
@@ -198,14 +322,35 @@ const Settings = () => {
                   <ImageIcon size={48} className="text-gray-200" />
                 )}
               </div>
-              <div className="space-y-3 group">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Logo URL</label>
-                <input
-                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue transition-all font-bold text-gray-900 text-sm"
-                  value={settings.ministry_logo}
-                  onChange={(e) => setSettings({ ...settings, ministry_logo: e.target.value })}
-                  placeholder="https://imagekit.io/..."
-                />
+              <div className="space-y-3 group/upload">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Upload Ministry Logo</label>
+                <div className="relative">
+                   <IKContext {...imagekitConfig} authenticator={authenticator}>
+                     <IKUpload
+                       fileName="ministry_logo.png"
+                       folder={IMAGEKIT_FOLDER_PATH}
+                       onUploadStart={() => setUploadingLogo(true)}
+                       onSuccess={(res) => {
+                         setSettings({ ...settings, ministry_logo: res.url });
+                         setUploadingLogo(false);
+                         toast.success('Logo uploaded successfully!');
+                       }}
+                       onError={(err) => {
+                         console.error(err);
+                         setUploadingLogo(false);
+                         toast.error('Logo upload failed. Verify ImageKit keys.');
+                       }}
+                       className="hidden"
+                       id="logo-upload"
+                     />
+                   </IKContext>
+                   <label htmlFor="logo-upload" className="w-full flex justify-center items-center px-4 py-3 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-scm-blue hover:bg-scm-blue/5 transition-all">
+                     {uploadingLogo ? <Loader2 size={16} className="animate-spin text-scm-blue mr-2" /> : <ImageIcon size={16} className="text-gray-400 group-hover/upload:text-scm-blue mr-2 transition-colors" />}
+                     <span className="font-bold text-gray-400 group-hover/upload:text-scm-blue transition-colors text-sm">
+                        {settings.ministry_logo ? 'Change Logo Image' : 'Click to Upload Logo'}
+                     </span>
+                   </label>
+                </div>
               </div>
             </div>
           </div>
