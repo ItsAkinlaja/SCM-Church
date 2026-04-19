@@ -13,6 +13,7 @@ import {
   Megaphone,
   Quote,
   ShieldCheck,
+  Play,
   Users,
 } from 'lucide-react';
 
@@ -125,7 +126,7 @@ const Home = () => {
       tag: 'Our Vision'
     },
     {
-      url: 'https://ik.imagekit.io/scmchurch/edward-cisneros-lpqwPxMVUv0-unsplash.jpg',
+      url: 'https://ik.imagekit.io/scmchurch/jametlene-reskp-YUVZOGlHfdk-unsplash.jpg',
       title: 'United in prayer, strengthened in fellowship.',
       subtitle: 'Join a community of believers dedicated to kingdom expansion and spiritual excellence since July 18, 1999.',
       tag: 'Our Mission'
@@ -135,7 +136,7 @@ const Home = () => {
   return (
     <div className="bg-scm-cream text-slate-900 overflow-x-hidden">
       {/* Premium Hero Section */}
-      <section className="relative h-screen min-h-[800px] w-full bg-scm-blue text-white">
+      <section className="relative min-h-[100dvh] w-full bg-scm-blue text-white">
         {/* Slideshow */}
         {slides.map((slide, index) => (
           <div
@@ -154,35 +155,35 @@ const Home = () => {
         ))}
 
         {/* Hero Content */}
-        <div className="relative h-full flex items-center pt-24">
-          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl">
-              <div className="overflow-hidden mb-8">
-                <span className="inline-block text-scm-accent font-sans font-semibold uppercase tracking-[0.4em] text-sm tracking-widest">
+        <div className="relative h-full flex flex-col justify-center pt-16 pb-12 md:pb-20">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 mt-4 md:mt-12 text-left">
+            <div className="max-w-4xl mx-0">
+              <div className="overflow-hidden mb-6">
+                <span className="inline-block text-scm-accent font-sans font-semibold uppercase tracking-[0.4em] text-xs sm:text-sm tracking-widest">
                   Successful Christian Missions
                 </span>
               </div>
               
-              <h1 className="text-5xl md:text-8xl font-serif font-bold leading-[1.05] tracking-tight mb-8 animate-fade-in">
+              <h1 className="text-[2.5rem] leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight mb-4 md:mb-6 animate-fade-in">
                 {slides[currentSlide].title}
               </h1>
               
-              <p className="text-lg md:text-xl text-slate-300 max-w-2xl leading-relaxed mb-12 animate-fade-in [animation-delay:200ms]">
+              <p className="text-[15px] sm:text-base md:text-xl text-slate-300 max-w-xl leading-relaxed mb-8 animate-fade-in [animation-delay:200ms] pr-2 sm:pr-0">
                 {slides[currentSlide].subtitle}
               </p>
 
-              <div className="flex flex-wrap gap-6 animate-fade-in [animation-delay:400ms]">
-                <Link to="/about" className="btn-primary border-none">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 animate-fade-in [animation-delay:400ms] w-full sm:w-auto">
+                <Link to="/about" className="btn-primary border-none text-[14px] w-full sm:w-auto text-center justify-center py-3.5">
                   Discover Our Ministry
-                  <ArrowRight size={20} className="inline-block ml-3 group-hover:translate-x-2 transition-transform" />
+                  <ArrowRight size={18} className="inline-block ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link to="/prayer-request" className="btn-outline border-white text-white hover:bg-white hover:text-scm-blue">
+                <Link to="/prayer-request" className="border border-white/50 text-white px-6 py-3.5 rounded-xl font-semibold tracking-wide hover:bg-white hover:text-scm-blue transition-all duration-300 active:scale-95 text-[14px] inline-flex items-center justify-center w-full sm:w-auto">
                   Submit Prayer Request
                 </Link>
               </div>
 
               {/* Indicators */}
-              <div className="absolute bottom-12 left-4 sm:left-6 lg:left-8 flex gap-4">
+              <div className="absolute bottom-12 left-4 sm:left-6 lg:left-8 hidden sm:flex gap-4">
                 {slides.map((_, index) => (
                   <button
                     key={index}
@@ -200,20 +201,63 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Pillars Section - Modern Card Layout */}
-      <section className="py-32 relative">
+      {/* Plan A Visit - New Visitor Module */}
+      <section className="py-12 md:py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Our Foundations</span>
-            <h2 className="text-4xl md:text-6xl font-serif font-bold text-scm-blue mb-6">The Three Pillars of Our Ministry</h2>
-            <div className="w-24 h-1 bg-scm-accent mx-auto rounded-full" />
+          <div className="bg-[#050b14] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden flex flex-col-reverse md:flex-row shadow-2xl">
+            <div className="md:w-1/2 p-8 sm:p-12 lg:p-20 flex flex-col justify-center text-white">
+              <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-4 block">New Here?</span>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-4 md:mb-6 leading-tight">Plan Your Visit This Sunday</h2>
+              <p className="text-slate-400 font-sans leading-relaxed mb-8 md:mb-10 max-w-md text-sm md:text-base">
+                We'd love to host you. Join us for a powerful time of worship, community, and the timeless truth of God's Word. 
+              </p>
+              <div className="space-y-6 mb-10 font-sans text-[13px]">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center shrink-0">
+                    <Clock3 size={16} className="text-scm-accent" />
+                  </div>
+                  <div>
+                    <strong className="block text-white mb-0.5">Service Times</strong>
+                    <span className="text-slate-400">Sundays at 8:30 AM</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center shrink-0">
+                    <MapPin size={16} className="text-scm-accent" />
+                  </div>
+                  <div>
+                    <strong className="block text-white mb-0.5">Location</strong>
+                    <span className="text-slate-400">Irebami Street, Ile Ife</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <Link to="/contact" className="bg-white text-[#050b14] px-8 py-5 inline-flex items-center font-sans font-bold uppercase tracking-widest text-[11px] hover:bg-scm-accent hover:text-white transition-colors">
+                  Get Directions <ArrowRight size={14} className="ml-3" />
+                </Link>
+              </div>
+            </div>
+            <div className="md:w-1/2 relative min-h-[250px] md:min-h-[400px]">
+              <img src="https://images.unsplash.com/photo-1544427920-c49ccfb85579?auto=format&fit=crop&q=80" alt="Welcome Team" className="absolute inset-0 w-full h-full object-cover" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pillars Section - Modern Card Layout */}
+      <section className="py-12 md:py-16 relative bg-scm-cream/50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12">
+            <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 md:mb-4 block">Our Foundations</span>
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-serif font-bold text-scm-blue mb-4 md:mb-6 leading-tight">The Three Pillars of Our Ministry</h2>
+            <div className="w-16 md:w-24 h-1 bg-scm-accent mx-auto rounded-full" />
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-3 gap-6 md:gap-10">
             {pillars.map((pillar, idx) => {
               const Icon = pillar.icon;
               return (
-                <div key={idx} className="premium-card group p-12 flex flex-col items-center text-center">
+                <div key={idx} className="premium-card group p-8 md:p-12 flex flex-col items-center text-center">
                   <div className="w-16 h-16 rounded-full bg-scm-light text-scm-blue flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-scm-blue group-hover:text-white transition-all duration-500">
                     <Icon size={28} className="stroke-[1.5px]" />
                   </div>
@@ -230,10 +274,10 @@ const Home = () => {
 
       {/* General Overseer Section - Premium Editorial Look */}
       {go && (
-        <section className="py-32 bg-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-50/50 -skew-x-12 translate-x-1/4 pointer-events-none" />
+        <section className="py-12 md:py-16 bg-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-full md:w-1/2 h-full bg-slate-50/50 skew-y-6 md:-skew-x-12 md:translate-x-1/4 pointer-events-none" />
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-            <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div className="grid lg:grid-cols-2 gap-10 md:gap-20 items-center">
               <div className="relative group">
                 <div className="relative rounded-[2rem] overflow-hidden aspect-[4/5] shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
                   <img 
@@ -251,19 +295,19 @@ const Home = () => {
                 </div>
               </div>
 
-              <div>
-                <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Our Spiritual Leader</span>
-                <h2 className="text-4xl md:text-6xl font-serif font-bold text-scm-blue mb-8 leading-tight">
+              <div className="text-center md:text-left">
+                <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 md:mb-4 block">Our Spiritual Leader</span>
+                <h2 className="text-3xl sm:text-4xl md:text-6xl font-serif font-bold text-scm-blue mb-6 md:mb-8 leading-tight">
                   Meet {go.name}
                 </h2>
-                <div className="space-y-6 text-lg text-slate-600 leading-relaxed font-medium">
+                <div className="space-y-6 text-base md:text-lg text-slate-600 leading-relaxed font-medium">
                   <p>{go.bio || "A visionary leader dedicated to spiritual excellence and kingdom expansion."}</p>
                   <p className="text-scm-blue font-serif italic text-xl border-l-4 border-scm-accent pl-6 py-2">
                     "Our mission is to build a community where every soul finds purpose, peace, and power in God's presence."
                   </p>
                 </div>
-                <div className="mt-12">
-                  <Link to="/leadership" className="btn-primary">
+                <div className="mt-8 md:mt-12">
+                  <Link to="/leadership" className="btn-primary w-full md:w-auto inline-flex justify-center">
                     View Leadership Team
                   </Link>
                 </div>
@@ -273,21 +317,53 @@ const Home = () => {
         </section>
       )}
 
-      {/* Upcoming Events - Clean List Style */}
-      <section className="py-32 bg-scm-cream">
+      {/* Latest Message Media Block */}
+      <section className="py-20 bg-[#050b14] relative text-white border-t border-slate-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-            <div className="max-w-2xl">
-              <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Join Our Gatherings</span>
-              <h2 className="text-4xl md:text-6xl font-serif font-bold text-scm-blue">Upcoming Events</h2>
+          <div className="mb-12 flex flex-col md:flex-row justify-between items-center md:items-end gap-6 text-center md:text-left">
+            <div>
+              <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 md:mb-4 block">Watch Online</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold">Catch Up On The Word</h2>
             </div>
-            <Link to="/events" className="btn-outline group">
+            <Link to="/study-material" className="text-[11px] font-sans font-bold uppercase tracking-[0.2em] hover:text-scm-accent transition-colors flex items-center pt-2 md:pt-0 mx-auto md:mx-0 bg-white/5 md:bg-transparent px-6 py-3 md:px-0 md:py-0 rounded-full md:rounded-none">
+              All Media <ArrowRight size={14} className="ml-2" />
+            </Link>
+          </div>
+          
+          <div className="relative aspect-video w-full rounded-none md:rounded-2xl overflow-hidden group cursor-pointer border border-white/5 bg-slate-900 shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1551829142-d9b8e5fa666e?auto=format&fit=crop&q=80" alt="Latest Sermon" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-700 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#050b14]/90 via-[#050b14]/30 to-transparent" />
+            
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:bg-scm-accent group-hover:border-scm-accent transition-all duration-500 scale-90 group-hover:scale-100 shadow-2xl">
+                <Play fill="currentColor" size={28} className="ml-1 text-white" />
+              </div>
+            </div>
+
+            <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 md:p-12">
+              <div className="inline-block px-3 py-1 bg-white/10 backdrop-blur border border-white/10 text-white text-[9px] font-sans font-bold uppercase tracking-widest mb-3 md:mb-4 rounded-md">Latest Message</div>
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold mb-2 md:mb-3 tracking-tight">The Power of Unwavering Faith</h3>
+              <p className="text-slate-400 font-sans text-xs sm:text-sm">Pastor (Prof.) Rufus A. Adedoyin  •  Sunday Service</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Upcoming Events - Clean List Style */}
+      <section className="py-12 md:py-16 bg-scm-cream">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-12 gap-6 md:gap-8 text-center md:text-left">
+            <div className="max-w-2xl">
+              <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 md:mb-4 block">Join Our Gatherings</span>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-serif font-bold text-scm-blue">Upcoming Events</h2>
+            </div>
+            <Link to="/events" className="btn-outline group w-full md:w-auto flex justify-center mt-2 md:mt-0">
               View All Events
               <ArrowRight size={18} className="inline-block ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
-          <div className="grid gap-8">
+          <div className="grid gap-6 md:gap-8">
             {upcomingEvents.length > 0 ? (
               upcomingEvents.map((event) => (
                 <div key={event.id} className="premium-card flex flex-col md:flex-row items-center p-8 md:p-12 group hover:bg-white transition-all">
@@ -330,18 +406,60 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Testimonies - Clean Airy Section */}
-      <section className="py-32 bg-scm-cream relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-xs mb-4 block">God's Faithfulness</span>
-            <h2 className="text-4xl md:text-6xl font-serif font-bold mb-8 text-scm-blue">Voices of Victory</h2>
-            <p className="text-slate-500 text-lg font-medium">Real stories of transformation and divine intervention within our community.</p>
+      {/* Ministries Connect Section */}
+      <section className="py-20 bg-white border-b border-slate-100">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-4 block">Connect & Grow</span>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#050b14]">Find Your Community</h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Ministry Card 1 */}
+            <div className="group relative aspect-[4/5] overflow-hidden bg-slate-900 cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1543807535-eceef0bc6599?auto=format&fit=crop&q=80" alt="Youth Ministry" className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-6 sm:p-8 w-full translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-500">
+                <h3 className="text-xl sm:text-2xl font-serif font-bold text-white mb-1 sm:mb-2">Youth Ministry</h3>
+                <p className="text-slate-300 font-sans text-xs sm:text-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 delay-100">Empowering the next generation.</p>
+              </div>
+            </div>
+
+            {/* Ministry Card 2 */}
+            <div className="group relative aspect-[4/5] overflow-hidden bg-slate-900 cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80" alt="Women's Fellowship" className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-6 sm:p-8 w-full translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-500">
+                <h3 className="text-xl sm:text-2xl font-serif font-bold text-white mb-1 sm:mb-2">Women's Fellowship</h3>
+                <p className="text-slate-300 font-sans text-xs sm:text-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 delay-100">Building strong pillars of faith.</p>
+              </div>
+            </div>
+
+            {/* Ministry Card 3 */}
+            <div className="group relative aspect-[4/5] overflow-hidden bg-slate-900 cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80" alt="Men's Fellowship" className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-6 sm:p-8 w-full translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-500">
+                <h3 className="text-xl sm:text-2xl font-serif font-bold text-white mb-1 sm:mb-2">Men's Fellowship</h3>
+                <p className="text-slate-300 font-sans text-xs sm:text-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 delay-100">Leading with wisdom and courage.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonies - Clean Airy Section */}
+      <section className="py-12 md:py-16 bg-scm-cream relative overflow-hidden">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12">
+            <span className="text-scm-accent font-sans font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 md:mb-4 block">God's Faithfulness</span>
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-serif font-bold mb-4 md:mb-8 text-scm-blue leading-tight">Voices of Victory</h2>
+            <p className="text-slate-500 text-sm md:text-lg font-medium">Real stories of transformation and divine intervention within our community.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
             {testimonies.map((testimony) => (
-              <div key={testimony.id} className="premium-card p-10 relative group border border-slate-100">
+              <div key={testimony.id} className="premium-card p-8 md:p-10 relative group border border-slate-100">
                 <Quote size={40} className="text-scm-accent absolute top-8 left-8 opacity-20" />
                 <div className="relative z-10 pt-4">
                   <p className="text-slate-600 mb-8 font-serif leading-relaxed text-lg">

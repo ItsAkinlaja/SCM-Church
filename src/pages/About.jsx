@@ -28,7 +28,7 @@ const About = () => {
       />
 
       {/* Leadership Section - Premium Editorial */}
-      <section className="py-32 bg-white relative overflow-hidden">
+      <section className="py-16 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-24 items-center">
             <div className="relative">
@@ -78,7 +78,7 @@ const About = () => {
       </section>
 
       {/* History Section - Modern Grid */}
-      <section className="py-32 bg-scm-cream relative">
+      <section className="py-16 bg-scm-cream relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-24 items-center">
             <div className="order-2 lg:order-1">
@@ -120,7 +120,7 @@ const About = () => {
       </section>
 
       {/* Vision & Mission - Premium Cards */}
-      <section className="py-32 px-4 lg:px-8">
+      <section className="py-16 px-4 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="premium-card p-16 relative group overflow-hidden">

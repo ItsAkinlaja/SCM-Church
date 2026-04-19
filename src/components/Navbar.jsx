@@ -6,7 +6,16 @@ import { supabase } from '../services/supabaseClient';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [settings, setSettings] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -40,15 +49,15 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="glass-nav sticky top-0 z-50">
+    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? 'glass-nav shadow-[0_4px_40px_rgba(0,0,0,0.02)]' : 'bg-transparent text-white'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-24">
+        <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-16 md:h-20' : 'h-20 md:h-24'}`}>
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-4 group">
-              <img 
-                src="https://ik.imagekit.io/scmchurch/WhatsApp_Image_2026-03-27_at_05.29.17-removebg-preview.png?updatedAt=1774595668191" 
-                alt="SCM Church Logo" 
-                className="h-16 w-auto object-contain drop-shadow-xl" 
+              <img
+                src="https://ik.imagekit.io/scmchurch/WhatsApp_Image_2026-03-27_at_05.29.17-removebg-preview.png?updatedAt=1774595668191"
+                alt="SCM Church Logo"
+                className={`w-auto object-contain transition-all duration-300 ${scrolled ? 'h-10 md:h-14 drop-shadow-xl' : 'h-12 md:h-16'}`}
               />
             </Link>
           </div>
@@ -57,8 +66,8 @@ const Navbar = () => {
           <div className="hidden lg:block">
             <div className="flex items-center space-x-1">
               {navLinks.map((link) => (
-                <div 
-                  key={link.name} 
+                <div
+                  key={link.name}
                   className="relative px-3"
                   onMouseEnter={() => link.dropdown && setOpenDropdown(link.name)}
                   onMouseLeave={() => link.dropdown && setOpenDropdown(null)}
@@ -66,14 +75,16 @@ const Navbar = () => {
                   <Link
                     to={link.path}
                     className={`flex items-center px-2 py-2 text-[15px] font-sans font-medium transition-all duration-300 relative group ${
-                      isActive(link.path) || openDropdown === link.name
-                        ? 'text-scm-blue'
-                        : 'text-slate-500 hover:text-scm-blue'
+                      scrolled 
+                        ? (isActive(link.path) || openDropdown === link.name ? 'text-scm-blue' : 'text-slate-500 hover:text-scm-blue')
+                        : (isActive(link.path) || openDropdown === link.name ? 'text-white' : 'text-white/80 hover:text-white')
                     }`}
                   >
                     {link.name}
                     {link.dropdown && <ChevronDown size={14} className={`ml-1 transition-transform duration-300 ${openDropdown === link.name ? 'rotate-180' : ''}`} />}
-                    <span className={`absolute bottom-0 left-0 h-[2px] bg-scm-accent transition-all duration-300 ${isActive(link.path) || openDropdown === link.name ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                    <span className={`absolute bottom-0 left-0 h-[2px] transition-all duration-300 ${
+                      scrolled ? 'bg-scm-accent' : 'bg-white'
+                    } ${isActive(link.path) || openDropdown === link.name ? 'w-full' : 'w-0 group-hover:w-full'}`} />
                   </Link>
 
                   {link.dropdown && openDropdown === link.name && (
@@ -96,9 +107,13 @@ const Navbar = () => {
           </div>
 
           <div className="hidden lg:flex items-center ml-8">
-            <Link 
-              to="/support-us" 
-              className="btn-primary py-3 px-7 text-[14px] font-sans font-medium hover:scale-105"
+            <Link
+              to="/support-us"
+              className={`py-3 px-7 text-[14px] font-sans font-bold hover:scale-105 transition-all duration-300 rounded-xl flex items-center justify-center ${
+                scrolled 
+                  ? 'btn-primary' 
+                  : 'bg-white text-scm-blue opacity-95 hover:opacity-100'
+              }`}
             >
               Join Us
             </Link>
@@ -108,39 +123,39 @@ const Navbar = () => {
           <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsOpen(true)}
-              className="inline-flex items-center justify-center p-2 rounded-xl text-gray-500 hover:bg-gray-50 focus:outline-none transition-colors"
+              className={`inline-flex items-center justify-center p-2 rounded-xl focus:outline-none transition-colors ${
+                scrolled ? 'text-gray-500 hover:bg-gray-50' : 'text-white hover:bg-white/10'
+              }`}
             >
-              <Menu size={24} />
+              <Menu size={28} />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Nav - Slider from left to right */}
-      <div 
-        className={`fixed inset-0 z-[100] lg:hidden transition-opacity duration-300 ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+      {/* Mobile Nav - Slider from right to left */}
+      <div
+        className={`fixed inset-0 z-[100] lg:hidden transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
       >
         {/* Overlay */}
-        <div 
+        <div
           className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
         />
-        
+
         {/* Drawer Content */}
-        <div 
-          className={`absolute top-0 left-0 h-full w-[80%] max-w-xs bg-white shadow-2xl transition-transform duration-500 ease-in-out flex flex-col ${
-            isOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
+        <div
+          className={`absolute top-0 right-0 h-full w-[80%] max-w-xs bg-white shadow-2xl transition-transform duration-500 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'
+            }`}
         >
           {/* Header */}
           <div className="p-6 border-b border-gray-100 flex items-center justify-between">
             <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center space-x-3">
-              <img 
-                src="https://ik.imagekit.io/scmchurch/WhatsApp_Image_2026-03-27_at_05.29.17-removebg-preview.png?updatedAt=1774595668191" 
-                alt="SCM Church Logo" 
-                className="h-12 w-auto object-contain" 
+              <img
+                src="https://ik.imagekit.io/scmchurch/WhatsApp_Image_2026-03-27_at_05.29.17-removebg-preview.png?updatedAt=1774595668191"
+                alt="SCM Church Logo"
+                className="h-12 w-auto object-contain"
               />
             </Link>
             <button
@@ -159,11 +174,10 @@ const Navbar = () => {
                   <div className="w-full">
                     <button
                       onClick={() => setOpenDropdown(openDropdown === link.name ? null : link.name)}
-                      className={`w-full flex justify-between items-center px-4 py-4 rounded-2xl text-base font-black tracking-wide transition-all ${
-                        isActive(link.path) || openDropdown === link.name
+                      className={`w-full flex justify-between items-center px-4 py-4 rounded-2xl text-base font-black tracking-wide transition-all ${isActive(link.path) || openDropdown === link.name
                           ? 'bg-scm-blue/5 text-scm-blue'
                           : 'text-gray-600 hover:bg-gray-50'
-                      }`}
+                        }`}
                     >
                       <span>{link.name}</span>
                       <ChevronDown size={20} className={`transition-transform ${openDropdown === link.name ? 'rotate-180' : ''}`} />
@@ -187,11 +201,10 @@ const Navbar = () => {
                   <Link
                     to={link.path}
                     onClick={() => setIsOpen(false)}
-                    className={`block px-4 py-4 rounded-2xl text-base font-black tracking-wide transition-all ${
-                      isActive(link.path)
+                    className={`block px-4 py-4 rounded-2xl text-base font-black tracking-wide transition-all ${isActive(link.path)
                         ? 'bg-scm-blue/5 text-scm-blue'
                         : 'text-gray-600 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     {link.name}
                   </Link>
