@@ -722,9 +722,9 @@ const Members = () => {
       </section>
 
       {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center bg-black/60 p-4 sm:p-4 backdrop-blur-sm transition-all duration-300">
-          <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-[2rem] sm:rounded-[2rem] border border-[#eadfca] bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] sm:shadow-[0_32px_80px_rgba(7,17,38,0.22)] animate-slide-up sm:animate-fade-in mt-8 sm:mt-0">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#f1e7d2] bg-white/80 px-6 py-4 sm:px-8 sm:py-6 backdrop-blur-md">
+        <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center bg-black/60 p-4 sm:p-6 backdrop-blur-sm transition-all duration-300">
+          <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-t-[2rem] sm:rounded-[1.5rem] border border-[#eadfca] bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] sm:shadow-[0_20px_60px_rgba(7,17,38,0.15)] animate-slide-up sm:animate-fade-in mt-8 sm:mt-0">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#f1e7d2] bg-white/80 px-6 py-3 sm:px-6 sm:py-4 backdrop-blur-md">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#b53a2d]">
                   {editingMember ? 'Update Profile' : 'New Member'}
@@ -742,7 +742,7 @@ const Members = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 px-6 py-6 sm:px-8 sm:py-8">
+            <form onSubmit={handleSubmit} className="space-y-5 px-6 py-5 sm:px-6 sm:py-6">
               <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
                 {[
                   { key: 'name', label: 'Full Name', type: 'text', required: true, placeholder: 'e.g. John Doe' },
