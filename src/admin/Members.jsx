@@ -202,6 +202,13 @@ const Members = () => {
     }
 
     setShowModal(true);
+    
+    // Scroll to top on mobile when modal opens
+    setTimeout(() => {
+      if (window.innerWidth < 640) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   const handleSubmit = async (event) => {
@@ -715,8 +722,8 @@ const Members = () => {
       </section>
 
       {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-sm transition-all duration-300">
-          <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-[2rem] sm:rounded-[2rem] border border-[#eadfca] bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] sm:shadow-[0_32px_80px_rgba(7,17,38,0.22)] animate-slide-up sm:animate-fade-in">
+        <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center bg-black/60 p-4 sm:p-4 backdrop-blur-sm transition-all duration-300">
+          <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-[2rem] sm:rounded-[2rem] border border-[#eadfca] bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] sm:shadow-[0_32px_80px_rgba(7,17,38,0.22)] animate-slide-up sm:animate-fade-in mt-8 sm:mt-0">
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#f1e7d2] bg-white/80 px-6 py-4 sm:px-8 sm:py-6 backdrop-blur-md">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#b53a2d]">
