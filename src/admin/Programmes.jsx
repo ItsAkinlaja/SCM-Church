@@ -1,75 +1,94 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
-import { ListChecks, Plus, Edit2, Trash2, Search, X, Save, Clock, Calendar, Info, Loader2, Sparkles } from 'lucide-react';
+import { 
+  Calendar, 
+  Plus, 
+  Edit2, 
+  Trash2, 
+  Search, 
+  X, 
+  Clock, 
+  MapPin, 
+  ChevronRight,
+  Loader2,
+  Calendar as CalendarIcon,
+  RefreshCw,
+  BellRing
+} from 'lucide-react';
 
-const Programmes = () => {
+const AdminProgrammes = () => {
   const [programmes, setProgrammes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingProg, setEditingProg] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-
   const [formData, setFormData] = useState({
     title: '',
-    day_of_week: '',
-    occurrence: 'Weekly',
+    day_of_week: 'Sunday',
     time: '',
-    description: '',
+    location: 'Main Sanctuary',
+    occurrence: 'Weekly',
+    description: ''
   });
 
+  const fetchProgrammes = useCallback(async () => {
+    const { data } = await supabase
+      .from('programmes')
+      .select('*')
+      .order('occurrence', { ascending: false })
+      .order('day_of_week', { ascending: true })
+      .order('created_at', { ascending: true });
+
+    if (data) {
+      // Auto-Deduplicate logic (runs locally while authenticated to bypass RLS)
+      const seen = new Set();
+      const toDelete = [];
+      const uniqueData = [];
+
+      data.forEach((prog) => {
+        const identifier = `${prog.title}-${prog.occurrence}-${prog.day_of_week}`;
+        if (seen.has(identifier)) {
+          toDelete.push(prog.id);
+        } else {
+          seen.add(identifier);
+          uniqueData.push(prog);
+        }
+      });
+
+      setProgrammes(uniqueData);
+
+      // Delete the duplicates quietly in the background
+      if (toDelete.length > 0) {
+        toDelete.forEach(async (id) => {
+          await supabase.from('programmes').delete().eq('id', id);
+        });
+      }
+    }
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
-    const fetchProgrammes = async () => {
-      setLoading(true);
+    let ignore = false;
+    async function loadProgrammes() {
       const { data } = await supabase
         .from('programmes')
         .select('*')
-        .order('occurrence', { ascending: false })
-        .order('day_of_week', { ascending: true })
-        .order('created_at', { ascending: true });
+        .order('order', { ascending: true });
 
-      if (data) {
-        // Auto-Deduplicate logic (runs locally while authenticated to bypass RLS)
-        const seen = new Set();
-        const toDelete = [];
-        const uniqueData = [];
-
-        data.forEach((prog) => {
-          const identifier = `${prog.title}-${prog.occurrence}-${prog.day_of_week}`;
-          if (seen.has(identifier)) {
-            toDelete.push(prog.id);
-          } else {
-            seen.add(identifier);
-            uniqueData.push(prog);
-          }
-        });
-
-        setProgrammes(uniqueData);
-
-        // Delete the duplicates quietly in the background
-        if (toDelete.length > 0) {
-          toDelete.forEach(async (id) => {
-            await supabase.from('programmes').delete().eq('id', id);
-          });
-        }
+      if (!ignore) {
+        if (data) setProgrammes(data);
+        setLoading(false);
       }
-      setLoading(false);
+    }
+    loadProgrammes();
+    return () => {
+      ignore = true;
     };
-
-    fetchProgrammes();
-  }, []);
+  }, []); // Only fetch on mount, manual refreshes use fetchProgrammes
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-
-    const fetchProgrammes = async () => {
-      const { data } = await supabase
-        .from('programmes')
-        .select('*')
-        .order('occurrence', { ascending: false })
-        .order('day_of_week', { ascending: true });
-      if (data) setProgrammes(data);
-    };
 
     if (editingProg) {
       const { error } = await supabase
@@ -322,4 +341,4 @@ const Programmes = () => {
   );
 };
 
-export default Programmes;
+export default AdminProgrammes;

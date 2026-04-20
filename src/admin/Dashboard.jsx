@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 import { useAdminStats } from '../hooks/useAdminStats';
@@ -25,21 +25,21 @@ const Dashboard = () => {
   const [birthdaysToday, setBirthdaysToday] = useState([]);
   const [loadingBirthdays, setLoadingBirthdays] = useState(true);
 
-  useEffect(() => {
-    const fetchBirthdays = async () => {
-      // Avoid synchronous setLoadingBirthdays(true) in effect
-      const today = new Date();
-      const monthDay = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-      
-      const { data } = await supabase.from('members').select('name, birthday');
-      if (data) {
-        const todays = data.filter(m => m.birthday && m.birthday.endsWith(monthDay));
-        setBirthdaysToday(todays);
-      }
-      setLoadingBirthdays(false);
-    };
-    fetchBirthdays();
+  const fetchBirthdays = useCallback(async () => {
+    const today = new Date();
+    const monthDay = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    
+    const { data } = await supabase.from('members').select('name, birthday');
+    if (data) {
+      const todays = data.filter(m => m.birthday && m.birthday.endsWith(monthDay));
+      setBirthdaysToday(todays);
+    }
+    setLoadingBirthdays(false);
   }, []);
+
+  useEffect(() => {
+    fetchBirthdays();
+  }, [fetchBirthdays]);
 
   const statCards = [
     {

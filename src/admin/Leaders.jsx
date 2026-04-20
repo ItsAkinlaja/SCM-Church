@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { IKContext, IKUpload } from 'imagekitio-react';
 import { imagekitConfig, IMAGEKIT_FOLDER_PATH, authenticator } from '../services/imagekit';
-import { UserCircle, Plus, Edit2, Trash2, Search, X, Save, ShieldCheck, Briefcase, Building2, Image, Loader2, Sparkles, UserPlus } from 'lucide-react';
+import { UserCircle, Plus, Edit2, Trash2, Search, X, Save, ShieldCheck, Briefcase, Building2, Image, Loader2, UserPlus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const AdminLeaders = () => {
@@ -20,20 +20,34 @@ const AdminLeaders = () => {
     photo_url: '',
   });
 
+  const fetchLeaders = useCallback(async () => {
+    const { data } = await supabase
+      .from('leaders')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (data) setLeaders(data);
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
-    const fetchLeaders = async () => {
-      setLoading(true);
+    let ignore = false;
+    async function loadLeaders() {
       const { data } = await supabase
         .from('leaders')
         .select('*')
-        .order('created_at', { ascending: true });
+        .order('name', { ascending: true });
 
-      if (data) setLeaders(data);
-      setLoading(false);
+      if (!ignore) {
+        if (data) setLeaders(data);
+        setLoading(false);
+      }
+    }
+    loadLeaders();
+    return () => {
+      ignore = true;
     };
-
-    fetchLeaders();
-  }, []);
+  }, []); // Only fetch on mount, manual refreshes use fetchLeaders
 
   const handleUploadSuccess = (res) => {
     setFormData({ ...formData, photo_url: res.url });
@@ -49,14 +63,6 @@ const AdminLeaders = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-
-    const fetchLeaders = async () => {
-      const { data } = await supabase
-        .from('leaders')
-        .select('*')
-        .order('created_at', { ascending: true });
-      if (data) setLeaders(data);
-    };
 
     if (editingLeader) {
       const { error } = await supabase
@@ -126,19 +132,18 @@ const AdminLeaders = () => {
   };
 
   return (
-    <div className="space-y-12 animate-fade-in pb-20">
+    <div className="space-y-12 animate-fade-in pb-20" translate="no" suppressHydrationWarning>
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8 bg-white p-6 sm:p-12 md:p-16 rounded-[30px] sm:rounded-[60px] shadow-2xl border border-gray-100 relative overflow-hidden group">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8 bg-white p-6 sm:p-12 md:p-16 rounded-[30px] sm:rounded-[60px] shadow-2xl border border-gray-100 relative overflow-hidden group" suppressHydrationWarning>
          <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-scm-blue/5 rounded-full -mr-32 -mt-32 sm:-mr-48 sm:-mt-48 group-hover:scale-150 transition-transform duration-700"></div>
          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10 relative z-10 w-full md:w-auto">
             <div className="w-16 h-16 sm:w-24 sm:h-24 bg-scm-blue text-white rounded-2xl sm:rounded-[40px] flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500 shrink-0">
-               <ShieldCheck size={32} className="sm:w-12 sm:h-12" />
+               <span className="flex items-center justify-center"><ShieldCheck size={32} className="sm:w-12 sm:h-12" /></span>
             </div>
             <div>
-               <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight">Ministry <span className="text-scm-blue">Leaders</span></h1>
+               <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight"><span>Ministry&nbsp;</span><span className="text-scm-blue">Leaders</span></h1>
                <p className="text-gray-400 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs flex items-center">
-                  <Sparkles size={14} className="mr-2 text-scm-gold shrink-0" />
-                  Leadership Team: {leaders.length} Active
+                  <span>Leadership Team:&nbsp;{leaders.length}&nbsp;Active</span>
                </p>
             </div>
          </div>
@@ -146,66 +151,81 @@ const AdminLeaders = () => {
            onClick={() => openModal()}
            className="w-full md:w-auto mt-4 md:mt-0 px-6 sm:px-12 py-4 sm:py-6 bg-scm-blue text-white rounded-2xl sm:rounded-3xl font-black hover:bg-blue-900 transition-all shadow-xl hover:shadow-scm-blue/40 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center group relative z-10 overflow-hidden"
          >
-           <UserPlus size={20} className="mr-2 sm:mr-3 group-hover:scale-110 transition-transform sm:w-6 sm:h-6" />
-           Appoint Leader
+           <span className="flex items-center justify-center"><UserPlus size={20} className="mr-2 sm:mr-3 group-hover:scale-110 transition-transform sm:w-6 sm:h-6" /></span>
+           <span>Appoint Leader</span>
          </button>
       </div>
 
       {/* Leaders Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-        {loading ? (
-          <div className="col-span-full py-32 flex flex-col items-center justify-center space-y-6">
-             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-scm-blue"></div>
-             <p className="text-gray-400 font-black uppercase tracking-widest text-sm">Reviewing Profiles...</p>
-          </div>
-        ) : leaders.map((leader) => (
-          <div key={leader.id} className="group bg-white rounded-[50px] shadow-2xl border border-gray-100 overflow-hidden hover:border-scm-blue/20 hover:scale-[1.03] transition-all duration-700 relative flex flex-col">
-             <div className="aspect-[10/12] overflow-hidden relative bg-gray-50">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10" suppressHydrationWarning>
+        {/* Loading State */}
+        <div 
+          key="loading-state"
+          style={{ display: loading ? 'flex' : 'none' }}
+          className="col-span-full py-32 flex-col items-center justify-center space-y-6"
+        >
+           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-scm-blue"></div>
+           <p className="text-gray-400 font-black uppercase tracking-widest text-sm"><span>Reviewing&nbsp;Profiles...</span></p>
+        </div>
+
+        {/* Empty State */}
+        <div 
+          key="empty-state"
+          style={{ display: (!loading && leaders.length === 0) ? 'flex' : 'none' }}
+          className="col-span-full py-32 bg-gray-50 rounded-[60px] border-4 border-dashed border-gray-100 flex-col items-center justify-center text-center px-10"
+        >
+           <span className="flex items-center justify-center mb-8"><UserCircle size={80} className="text-gray-100" /></span>
+           <h3 className="text-3xl font-black text-gray-300 mb-4"><span>No&nbsp;leadership&nbsp;profiles.</span></h3>
+           <p className="text-gray-400 font-medium max-w-sm mb-10"><span>Get&nbsp;started&nbsp;by&nbsp;adding&nbsp;your&nbsp;ministry&nbsp;leaders&nbsp;to&nbsp;the&nbsp;portal.</span></p>
+           <button onClick={() => openModal()} className="px-10 py-5 bg-white text-scm-blue border-2 border-scm-blue/20 rounded-2xl font-black hover:bg-scm-blue hover:text-white transition-all shadow-xl"><span>Appoint&nbsp;First&nbsp;Leader</span></button>
+        </div>
+
+        {/* Data Cards */}
+        {leaders.map((leader) => (
+          <div 
+            key={leader.id} 
+            style={{ display: (!loading && leaders.length > 0) ? 'flex' : 'none' }}
+            className="group bg-white rounded-[50px] shadow-2xl border border-gray-100 overflow-hidden hover:border-scm-blue/20 hover:scale-[1.03] transition-all duration-700 relative flex-col"
+            suppressHydrationWarning
+          >
+             <div className="aspect-[10/12] overflow-hidden relative bg-gray-50" suppressHydrationWarning>
                 {leader.photo_url ? (
                   <img src={leader.photo_url} alt={leader.name} className="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-all duration-700 opacity-90" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-100">
-                     <UserCircle size={120} strokeWidth={1} />
+                     <span className="flex items-center justify-center"><UserCircle size={120} strokeWidth={1} /></span>
                   </div>
                 )}
                 
                 {/* Role Badge */}
-                <div className="absolute top-6 left-6 z-10">
+                <div className="absolute top-6 left-6 z-10" suppressHydrationWarning>
                    <div className="bg-scm-blue text-white px-5 py-2.5 rounded-2xl text-[10px] font-black tracking-widest uppercase shadow-2xl transform -rotate-3 group-hover:rotate-0 transition-transform">
-                      {leader.role}
+                      <span>{leader.role}</span>
                    </div>
                 </div>
 
                 {/* Hover Actions */}
-                <div className="absolute inset-0 bg-gradient-to-t from-scm-blue/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center p-8">
+                <div className="absolute inset-0 bg-gradient-to-t from-scm-blue/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center p-8" suppressHydrationWarning>
                    <div className="flex space-x-4 transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500">
                       <button onClick={() => openModal(leader)} className="p-4 bg-white text-scm-blue hover:bg-scm-blue hover:text-white rounded-2xl shadow-xl transition-all transform hover:scale-110">
-                         <Edit2 size={20} />
+                         <span className="flex items-center justify-center"><Edit2 size={20} /></span>
                       </button>
                       <button onClick={() => handleDelete(leader.id)} className="p-4 bg-white text-scm-red hover:bg-scm-red hover:text-white rounded-2xl shadow-xl transition-all transform hover:scale-110">
-                         <Trash2 size={20} />
+                         <span className="flex items-center justify-center"><Trash2 size={20} /></span>
                       </button>
                    </div>
                 </div>
              </div>
 
-             <div className="p-6 sm:p-10 text-center flex-grow flex flex-col">
-                <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-2 group-hover:text-scm-blue transition-colors">{leader.name}</h3>
-                <p className="text-scm-red text-[10px] font-black uppercase tracking-[0.3em] mb-6">{leader.department || "General Ministry"}</p>
+             <div className="p-6 sm:p-10 text-center flex-grow flex flex-col" suppressHydrationWarning>
+                <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-2 group-hover:text-scm-blue transition-colors"><span>{leader.name}</span></h3>
+                <p className="text-scm-red text-[10px] font-black uppercase tracking-[0.3em] mb-6"><span>{leader.department || "General Ministry"}</span></p>
                 <div className="mt-auto pt-6 border-t border-gray-50 flex justify-center items-center">
-                   <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Added {new Date(leader.created_at).toLocaleDateString()}</span>
+                   <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest"><span>Added&nbsp;{new Date(leader.created_at).toLocaleDateString()}</span></span>
                 </div>
              </div>
           </div>
         ))}
-        {leaders.length === 0 && !loading && (
-          <div className="col-span-full py-32 bg-gray-50 rounded-[60px] border-4 border-dashed border-gray-100 flex flex-col items-center justify-center text-center px-10">
-             <UserCircle size={80} className="text-gray-100 mb-8" />
-             <h3 className="text-3xl font-black text-gray-300 mb-4">No leadership profiles.</h3>
-             <p className="text-gray-400 font-medium max-w-sm mb-10">Get started by adding your ministry leaders to the portal.</p>
-             <button onClick={() => openModal()} className="px-10 py-5 bg-white text-scm-blue border-2 border-scm-blue/20 rounded-2xl font-black hover:bg-scm-blue hover:text-white transition-all shadow-xl">Appoint First Leader</button>
-          </div>
-        )}
       </div>
 
       {/* Modal */}

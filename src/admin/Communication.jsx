@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { 
   MessageSquare, 
@@ -21,39 +21,38 @@ const Communication = () => {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [sendingShoutout, setSendingShoutout] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // Avoid synchronous setLoading(true) in effect if already loading
-      const today = new Date();
-      const monthDay = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const fetchData = useCallback(async () => {
+    const today = new Date();
+    const monthDay = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-      // Fetch all members (ideally filter in SQL, but for small sets frontend is fine)
-      const { data: members } = await supabase.from('members').select('*');
-      
-      if (members) {
-        const todaysBirthdays = members.filter(member => {
-          if (!member.birthday) return false;
-          // Birthday format is YYYY-MM-DD
-          return member.birthday.endsWith(monthDay);
-        });
-        setBirthdaysToday(todaysBirthdays);
-      }
+    // Fetch all members (ideally filter in SQL, but for small sets frontend is fine)
+    const { data: members } = await supabase.from('members').select('*');
+    
+    if (members) {
+      const todaysBirthdays = members.filter(member => {
+        if (!member.birthday) return false;
+        // Birthday format is YYYY-MM-DD
+        return member.birthday.endsWith(monthDay);
+      });
+      setBirthdaysToday(todaysBirthdays);
+    }
 
-      // Fetch upcoming events
-      const { data: events } = await supabase
-        .from('events')
-        .select('*')
-        .gte('date', today.toISOString())
-        .order('date', { ascending: true })
-        .limit(5);
+    // Fetch upcoming events
+    const { data: events } = await supabase
+      .from('events')
+      .select('*')
+      .gte('date', today.toISOString())
+      .order('date', { ascending: true })
+      .limit(5);
 
-      if (events) setUpcomingEvents(events);
-      
-      setLoading(false);
-    };
-
-    fetchData();
+    if (events) setUpcomingEvents(events);
+    
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleSendShoutout = (member, type) => {
     setSendingShoutout(member.id);
@@ -75,7 +74,7 @@ const Communication = () => {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-10 animate-fade-in pb-20 overflow-x-hidden">
+    <div className="space-y-6 sm:space-y-10 pb-20 overflow-x-hidden">
       {/* Header */}
       <div className="bg-white p-6 sm:p-10 md:p-14 rounded-[30px] sm:rounded-[50px] shadow-2xl border border-gray-100">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8">

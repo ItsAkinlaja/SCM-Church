@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
 import {
   AlertCircle,
@@ -132,30 +132,28 @@ const Members = () => {
   const [formData, setFormData] = useState(emptyForm);
   const fileInputRef = useRef(null);
 
-  const fetchMembers = async (showLoading = true) => {
-    if (showLoading) setLoading(true);
+  const fetchMembers = useCallback(async () => {
     const { data } = await supabase.from('members').select('*').order('name', { ascending: true });
     if (data) setMembers(data);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
-    let isMounted = true;
+    let ignore = false;
     
-    const loadData = async () => {
+    async function loadMembers() {
       const { data } = await supabase.from('members').select('*').order('name', { ascending: true });
-      if (isMounted && data) {
-        setMembers(data);
+      if (!ignore) {
+        if (data) setMembers(data);
         setLoading(false);
       }
-    };
+    }
 
-    loadData();
-    
+    loadMembers();
     return () => {
-      isMounted = false;
+      ignore = true;
     };
-  }, []);
+  }, []); // Only fetch on mount, manual refreshes use fetchMembers
 
   const filteredMembers = useMemo(
     () =>
@@ -331,52 +329,52 @@ const Members = () => {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-fade-in pb-20 overflow-x-hidden">
-      <section className="overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-[#eadfca] bg-white shadow-[0_22px_70px_rgba(7,17,38,0.08)]">
-        <div className="grid gap-6 sm:gap-8 px-5 py-6 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:py-10">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#efd7d2] bg-[#fff1ee] px-3 py-1.5 sm:px-4 sm:py-2 text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.26em] text-[#b53a2d]">
-              <Users size={14} />
-              Members Administration
+    <div id="members-root" className="space-y-4 sm:space-y-8 animate-fade-in pb-20 overflow-x-hidden" translate="no" suppressHydrationWarning>
+      <section id="members-intro" className="overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-[#eadfca] bg-white shadow-[0_22px_70px_rgba(7,17,38,0.08)]">
+        <div className="grid gap-6 sm:gap-8 px-5 py-6 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-10 lg:py-10">
+          <div className="flex flex-col">
+            <div className="inline-flex self-start items-center gap-2 rounded-full border border-[#efd7d2] bg-[#fff1ee] px-3 py-1.5 sm:px-4 sm:py-2 text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-[#b53a2d]">
+              <span className="flex items-center justify-center"><Users size={14} /></span>
+              <span>Members Administration</span>
             </div>
-            <h2 className="mt-4 sm:mt-5 text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl leading-tight">
-              Build and manage your church member directory beautifully.
+            <h2 className="mt-4 sm:mt-6 text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl leading-tight">
+              <span>Manage your church directory.</span>
             </h2>
-            <p className="mt-4 sm:mt-5 max-w-2xl text-sm sm:text-base leading-relaxed sm:leading-8 text-slate-600">
-              Add members one by one, search quickly, export records, or import an entire list from CSV when you need to onboard many people at once.
+            <p className="mt-3 sm:mt-5 max-w-2xl text-sm sm:text-base leading-relaxed text-slate-600">
+              <span>Quickly add members, search, or import from CSV to onboard your community.</span>
             </p>
 
-            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="mt-6 sm:mt-8 flex flex-row gap-3 sm:gap-4">
               <button
                 onClick={() => openModal()}
-                className="w-full sm:w-auto inline-flex min-h-12 items-center justify-center rounded-full bg-[#071126] px-6 py-3 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-[#102042]"
+                className="flex-1 sm:flex-none inline-flex min-h-12 items-center justify-center rounded-xl sm:rounded-full bg-[#071126] px-4 sm:px-8 py-3 text-[10px] sm:text-sm font-bold uppercase tracking-[0.15em] text-white transition hover:bg-[#102042] shadow-lg active:scale-95"
               >
-                <Plus size={18} className="mr-2" />
-                Add Member
+                <span className="flex items-center justify-center mr-2"><Plus size={18} /></span>
+                <span>Add Member</span>
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full sm:w-auto inline-flex min-h-12 items-center justify-center rounded-full border border-[#eadfca] bg-[#fbf7eb] px-6 py-3 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-slate-700 transition hover:border-[#d8c5bb] hover:text-[#b53a2d]"
+                className="flex-1 sm:flex-none inline-flex min-h-12 items-center justify-center rounded-xl sm:rounded-full border border-[#eadfca] bg-[#fbf7eb] px-4 sm:px-8 py-3 text-[10px] sm:text-sm font-bold uppercase tracking-[0.15em] text-slate-700 transition hover:border-[#d8c5bb] shadow-sm active:scale-95"
               >
-                <Upload size={18} className="mr-2" />
-                Import CSV
+                <span className="flex items-center justify-center mr-2"><Upload size={18} /></span>
+                <span>Import CSV</span>
               </button>
             </div>
           </div>
 
-          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+          <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
             {[
-              { label: 'Total Members', value: members.length, icon: Users },
-              { label: 'Departments', value: new Set(members.map((member) => member.department).filter(Boolean)).size, icon: FileSpreadsheet },
-              { label: 'CSV Ready', value: 'Yes', icon: Upload },
+              { label: 'Total', value: members.length, icon: Users },
+              { label: 'Depts', value: new Set(members.map((member) => member.department).filter(Boolean)).size, icon: FileSpreadsheet },
+              { label: 'CSV', value: 'Ready', icon: Upload },
             ].map((item) => (
-              <div key={item.label} className="rounded-[1.2rem] sm:rounded-[1.5rem] border border-[#eadfca] bg-[#fbf7eb] p-4 sm:p-5 flex flex-row sm:flex-col items-center sm:items-start gap-4 sm:gap-0">
-                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-white text-[#b53a2d] shadow-sm shrink-0">
-                  <item.icon size={18} className="sm:w-5 sm:h-5" />
+              <div key={item.label} className="rounded-2xl sm:rounded-[1.5rem] border border-[#eadfca] bg-[#fbf7eb] p-3 sm:p-5 flex flex-col items-center sm:items-start text-center sm:text-left">
+                <div className="flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-white text-[#b53a2d] shadow-sm shrink-0 mb-3 sm:mb-5">
+                  <span className="flex items-center justify-center"><item.icon size={16} className="sm:w-5 sm:h-5" /></span>
                 </div>
                 <div>
-                  <div className="sm:mt-5 text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">{item.label}</div>
-                  <div className="sm:mt-2 text-xl sm:text-3xl font-bold tracking-tight text-slate-900">{loading ? '...' : item.value}</div>
+                  <div className="text-[8px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400"><span>{item.label}</span></div>
+                  <div className="mt-0.5 sm:mt-2 text-lg sm:text-3xl font-bold tracking-tight text-slate-900"><span>{loading ? '...' : item.value}</span></div>
                 </div>
               </div>
             ))}
@@ -457,141 +455,156 @@ const Members = () => {
                     <th className="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#f4ecda]">
-                  {loading ? (
-                    <tr>
-                      <td colSpan="5" className="px-6 py-16 text-center">
-                        <div className="inline-flex items-center gap-3 text-slate-500">
-                          <Loader2 size={18} className="animate-spin" />
-                          Loading members...
+                <tbody className="divide-y divide-[#f4ecda]" suppressHydrationWarning>
+                  {/* Loading State */}
+                  <tr style={{ display: loading ? 'table-row' : 'none' }}>
+                    <td colSpan="5" className="px-6 py-16 text-center">
+                      <div className="inline-flex items-center gap-3 text-slate-500">
+                        <Loader2 size={18} className="animate-spin" />
+                        <span>Loading members...</span>
+                      </div>
+                    </td>
+                  </tr>
+
+                  {/* Empty State */}
+                  <tr style={{ display: (!loading && filteredMembers.length === 0) ? 'table-row' : 'none' }}>
+                    <td colSpan="5" className="px-6 py-16 text-center text-slate-500">
+                      <span>No members found for that search.</span>
+                    </td>
+                  </tr>
+
+                  {/* Data Rows */}
+                  {filteredMembers.map((member) => (
+                    <tr key={member.id} className="bg-white transition hover:bg-[#fffdf7]" style={{ display: (!loading && filteredMembers.length > 0) ? 'table-row' : 'none' }} suppressHydrationWarning>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-4">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#071126]/8 font-bold text-[#071126]">
+                            <span>{member.name?.charAt(0)?.toUpperCase()}</span>
+                          </div>
+                          <div>
+                            <div className="font-semibold text-slate-900"><span>{member.name}</span></div>
+                            <div className="text-xs text-slate-400">
+                              <span>Joined {new Date(member.created_at).toLocaleDateString()}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="space-y-2 text-sm text-slate-600">
+                          <div className="flex items-center gap-2">
+                            <Phone size={14} className="text-[#b53a2d]" />
+                            <span>{member.phone || 'No phone number'}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Mail size={14} className="text-slate-400" />
+                            <span>{member.email || 'No email address'}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className="inline-flex rounded-full bg-[#fff1ee] px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-[#b53a2d]">
+                          <span>{member.department || 'General'}</span>
+                        </span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="space-y-2 text-sm text-slate-600">
+                          <div className="flex items-center gap-2">
+                            <Calendar size={14} className="text-[#b53a2d]" />
+                            <span>{member.birthday || 'Birthday not set'}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Heart size={14} className="text-[#d96858]" />
+                            <span>{member.anniversary || 'Anniversary not set'}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => openModal(member)}
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#eadfca] bg-white text-slate-500 transition hover:border-[#d8c5bb] hover:text-[#071126]"
+                          >
+                            <span className="flex items-center justify-center"><Edit2 size={16} /></span>
+                          </button>
+                          <button
+                            onClick={() => handleDelete(member.id)}
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#f0d4ce] bg-[#fff1ee] text-[#b53a2d] transition hover:bg-[#ffe5df]"
+                          >
+                            <span className="flex items-center justify-center"><Trash2 size={16} /></span>
+                          </button>
                         </div>
                       </td>
                     </tr>
-                  ) : filteredMembers.length ? (
-                    filteredMembers.map((member) => (
-                      <tr key={member.id} className="bg-white transition hover:bg-[#fffdf7]">
-                        <td className="px-6 py-5">
-                          <div className="flex items-center gap-4">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#071126]/8 font-bold text-[#071126]">
-                              {member.name?.charAt(0)?.toUpperCase()}
-                            </div>
-                            <div>
-                              <div className="font-semibold text-slate-900">{member.name}</div>
-                              <div className="text-xs text-slate-400">
-                                Joined {new Date(member.created_at).toLocaleDateString()}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-5">
-                          <div className="space-y-2 text-sm text-slate-600">
-                            <div className="flex items-center gap-2">
-                              <Phone size={14} className="text-[#b53a2d]" />
-                              <span>{member.phone || 'No phone number'}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Mail size={14} className="text-slate-400" />
-                              <span>{member.email || 'No email address'}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-5">
-                          <span className="inline-flex rounded-full bg-[#fff1ee] px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-[#b53a2d]">
-                            {member.department || 'General'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-5">
-                          <div className="space-y-2 text-sm text-slate-600">
-                            <div className="flex items-center gap-2">
-                              <Calendar size={14} className="text-[#b53a2d]" />
-                              <span>{member.birthday || 'Birthday not set'}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Heart size={14} className="text-[#d96858]" />
-                              <span>{member.anniversary || 'Anniversary not set'}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-5">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => openModal(member)}
-                              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#eadfca] bg-white text-slate-500 transition hover:border-[#d8c5bb] hover:text-[#071126]"
-                            >
-                              <Edit2 size={16} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(member.id)}
-                              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#f0d4ce] bg-[#fff1ee] text-[#b53a2d] transition hover:bg-[#ffe5df]"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="px-6 py-16 text-center text-slate-500">
-                        No members found for that search.
-                      </td>
-                    </tr>
-                  )}
+                  ))}
                 </tbody>
               </table>
             </div>
           </div>
 
-          <div className="mt-6 space-y-4 lg:hidden">
-            {loading ? (
-              <div className="rounded-[1.5rem] border border-[#eadfca] bg-[#fbf7eb] px-5 py-8 text-center text-slate-500">
-                Loading members...
-              </div>
-            ) : filteredMembers.length ? (
-              filteredMembers.map((member) => (
-                <div key={member.id} className="rounded-[1.5rem] border border-[#eadfca] bg-[#fbf7eb] p-5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="text-lg font-bold text-slate-900">{member.name}</div>
-                      <div className="mt-1 text-sm text-slate-500">{member.department || 'General'}</div>
+          <div className="mt-6 space-y-3 lg:hidden" suppressHydrationWarning>
+            {/* Loading State */}
+            <div style={{ display: loading ? 'block' : 'none' }} className="rounded-[1.5rem] border border-[#eadfca] bg-[#fbf7eb] px-5 py-12 text-center text-slate-500">
+              <Loader2 size={24} className="mx-auto mb-4 animate-spin text-slate-300" />
+              <span>Loading directory...</span>
+            </div>
+
+            {/* Empty State */}
+            <div style={{ display: (!loading && filteredMembers.length === 0) ? 'block' : 'none' }} className="rounded-[1.5rem] border border-[#eadfca] bg-[#fbf7eb] px-5 py-12 text-center text-slate-500">
+              <Search size={24} className="mx-auto mb-4 text-slate-300" />
+              <span>No members found for that search.</span>
+            </div>
+
+            {/* Data Cards */}
+            {filteredMembers.map((member) => (
+              <div key={member.id} style={{ display: (!loading && filteredMembers.length > 0) ? 'block' : 'none' }} className="rounded-2xl border border-[#eadfca] bg-white p-4 shadow-sm active:bg-gray-50 transition-colors" suppressHydrationWarning>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#071126]/5 font-bold text-[#071126] text-sm">
+                      <span>{member.name?.charAt(0)?.toUpperCase()}</span>
                     </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => openModal(member)}
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#eadfca] bg-white text-slate-500"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(member.id)}
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#f0d4ce] bg-[#fff1ee] text-[#b53a2d]"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    <div className="min-w-0">
+                      <div className="text-sm font-bold text-slate-900 truncate"><span>{member.name}</span></div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#b53a2d] mt-0.5">
+                        <span>{member.department || 'General'}</span>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="mt-4 space-y-2 text-sm text-slate-600">
-                    <div className="flex items-center gap-2">
-                      <Phone size={14} className="text-[#b53a2d]" />
-                      <span>{member.phone || 'No phone number'}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Mail size={14} className="text-slate-400" />
-                      <span>{member.email || 'No email address'}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar size={14} className="text-[#b53a2d]" />
-                      <span>{member.birthday || 'Birthday not set'}</span>
-                    </div>
+                  <div className="flex gap-1.5 shrink-0">
+                    <button
+                      onClick={() => openModal(member)}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#eadfca] bg-white text-slate-400 active:text-[#071126] active:bg-gray-50 transition-colors"
+                    >
+                      <span className="flex items-center justify-center"><Edit2 size={14} /></span>
+                    </button>
+                    <button
+                      onClick={() => handleDelete(member.id)}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#f0d4ce] bg-[#fff1ee] text-[#b53a2d] active:bg-[#ffe5df] transition-colors"
+                    >
+                      <span className="flex items-center justify-center"><Trash2 size={14} /></span>
+                    </button>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="rounded-[1.5rem] border border-[#eadfca] bg-[#fbf7eb] px-5 py-8 text-center text-slate-500">
-                No members found for that search.
+
+                <div className="mt-4 grid grid-cols-2 gap-y-3 gap-x-2 border-t border-[#f4ecda] pt-4">
+                  <div className="flex items-center gap-2 text-[11px] text-slate-600">
+                    <Phone size={12} className="text-[#b53a2d] shrink-0" />
+                    <span className="truncate"><span>{member.phone || 'N/A'}</span></span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-slate-600">
+                    <Mail size={12} className="text-slate-400 shrink-0" />
+                    <span className="truncate"><span>{member.email || 'N/A'}</span></span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-slate-600">
+                    <Calendar size={12} className="text-[#b53a2d] shrink-0" />
+                    <span className="truncate"><span>{member.birthday || 'N/A'}</span></span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-slate-600">
+                    <Heart size={12} className="text-[#d96858] shrink-0" />
+                    <span className="truncate"><span>{member.anniversary || 'N/A'}</span></span>
+                  </div>
+                </div>
               </div>
-            )}
+            ))}
           </div>
         </div>
 
@@ -620,34 +633,34 @@ const Members = () => {
               onChange={handleCsvSelected}
             />
 
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-2 sm:gap-3">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#071126] px-5 py-2 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-[#102042]"
+                className="flex-1 sm:flex-none inline-flex min-h-11 items-center justify-center rounded-xl sm:rounded-full bg-[#071126] px-4 py-2 text-[10px] sm:text-sm font-bold uppercase tracking-[0.12em] text-white transition active:scale-95"
               >
-                <Upload size={16} className="mr-2" />
-                Choose CSV
+                <Upload size={14} className="mr-2" />
+                <span>Upload CSV</span>
               </button>
               <button
                 onClick={handleImportCsv}
                 disabled={!csvPreview.length || importing}
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#eadfca] bg-[#fbf7eb] px-5 py-2 text-sm font-bold uppercase tracking-[0.18em] text-slate-700 transition hover:border-[#d8c5bb] hover:text-[#b53a2d] disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex-1 sm:flex-none inline-flex min-h-11 items-center justify-center rounded-xl sm:rounded-full border border-[#eadfca] bg-[#fbf7eb] px-4 py-2 text-[10px] sm:text-sm font-bold uppercase tracking-[0.12em] text-slate-700 disabled:opacity-50 active:scale-95"
               >
-                {importing ? <Loader2 size={16} className="mr-2 animate-spin" /> : <FileSpreadsheet size={16} className="mr-2" />}
-                Import Rows
+                {importing ? <Loader2 size={14} className="mr-2 animate-spin" /> : <FileSpreadsheet size={14} className="mr-2" />}
+                <span>Import</span>
               </button>
               <button
                 onClick={handleDownloadSampleCsv}
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#eadfca] bg-white px-5 py-2 text-sm font-bold uppercase tracking-[0.18em] text-slate-700 transition hover:border-[#d8c5bb] hover:text-[#b53a2d]"
+                className="flex-1 sm:flex-none inline-flex min-h-11 items-center justify-center rounded-xl sm:rounded-full border border-[#eadfca] bg-white px-4 py-2 text-[10px] sm:text-sm font-bold uppercase tracking-[0.12em] text-slate-700 active:scale-95"
               >
-                <Download size={16} className="mr-2" />
-                Sample CSV
+                <Download size={14} className="mr-2" />
+                <span>Sample</span>
               </button>
               <button
                 onClick={resetImportState}
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#f0d4ce] bg-[#fff1ee] px-5 py-2 text-sm font-bold uppercase tracking-[0.18em] text-[#b53a2d] transition hover:bg-[#ffe5df]"
+                className="inline-flex min-h-11 items-center justify-center rounded-xl sm:rounded-full border border-[#f0d4ce] bg-[#fff1ee] px-4 py-2 text-[10px] sm:text-sm font-bold uppercase tracking-[0.12em] text-[#b53a2d] active:scale-95"
               >
-                Clear
+                <span>Clear</span>
               </button>
             </div>
 
@@ -702,65 +715,65 @@ const Members = () => {
       </section>
 
       {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 p-4 backdrop-blur-sm">
-          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-[2rem] border border-[#eadfca] bg-white shadow-[0_32px_80px_rgba(7,17,38,0.22)]">
-            <div className="flex items-center justify-between border-b border-[#f1e7d2] px-6 py-5 sm:px-8">
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-sm transition-all duration-300">
+          <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-[2rem] sm:rounded-[2rem] border border-[#eadfca] bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] sm:shadow-[0_32px_80px_rgba(7,17,38,0.22)] animate-slide-up sm:animate-fade-in">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#f1e7d2] bg-white/80 px-6 py-4 sm:px-8 sm:py-6 backdrop-blur-md">
               <div>
-                <div className="text-xs font-bold uppercase tracking-[0.24em] text-[#b53a2d]">
-                  {editingMember ? 'Edit Member' : 'New Member'}
+                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#b53a2d]">
+                  {editingMember ? 'Update Profile' : 'New Member'}
                 </div>
-                <h3 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
-                  {editingMember ? 'Update member record' : 'Add a member to the directory'}
+                <h3 className="mt-1 text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                  {editingMember ? 'Edit member info' : 'Add to directory'}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-[#eadfca] bg-[#fbf7eb] text-slate-500 transition hover:text-[#b53a2d]"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#eadfca] bg-[#fbf7eb] text-slate-500 transition hover:text-[#b53a2d] active:scale-90"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8 px-6 py-6 sm:px-8 sm:py-8">
-              <div className="grid gap-6 md:grid-cols-2">
+            <form onSubmit={handleSubmit} className="space-y-6 px-6 py-6 sm:px-8 sm:py-8">
+              <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
                 {[
-                  { key: 'name', label: 'Full Name', type: 'text', required: true, placeholder: 'John Doe' },
-                  { key: 'department', label: 'Department', type: 'text', placeholder: 'Choir, Welfare, Ushering' },
-                  { key: 'phone', label: 'Phone Number', type: 'text', placeholder: '+234...' },
+                  { key: 'name', label: 'Full Name', type: 'text', required: true, placeholder: 'e.g. John Doe' },
+                  { key: 'department', label: 'Department', type: 'text', placeholder: 'e.g. Choir' },
+                  { key: 'phone', label: 'Phone Number', type: 'tel', placeholder: '+234...' },
                   { key: 'email', label: 'Email Address', type: 'email', placeholder: 'name@example.com' },
                   { key: 'birthday', label: 'Birthday', type: 'date' },
                   { key: 'anniversary', label: 'Wedding Anniversary', type: 'date' },
                 ].map((field) => (
-                  <div key={field.key} className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-[0.22em] text-slate-400">{field.label}</label>
+                  <div key={field.key} className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 ml-1">{field.label}</label>
                     <input
                       type={field.type}
                       required={field.required}
                       placeholder={field.placeholder}
                       value={formData[field.key]}
                       onChange={(event) => setFormData({ ...formData, [field.key]: event.target.value })}
-                      className="w-full rounded-2xl border border-[#eadfca] bg-[#fbf7eb] px-4 py-4 text-sm font-medium text-slate-800 outline-none transition focus:border-[#d8c5bb] focus:bg-white"
+                      className="w-full rounded-xl sm:rounded-2xl border border-[#eadfca] bg-[#fbf7eb] px-4 py-3 sm:py-4 text-sm font-medium text-slate-800 outline-none transition focus:border-[#d8c5bb] focus:bg-white"
                     />
                   </div>
                 ))}
               </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:pt-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#eadfca] bg-[#fbf7eb] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-slate-700 transition hover:border-[#d8c5bb] hover:text-[#b53a2d]"
+                  className="inline-flex min-h-12 items-center justify-center rounded-xl sm:rounded-full border border-[#eadfca] bg-white px-6 py-3 text-xs font-bold uppercase tracking-[0.15em] text-slate-600 transition hover:bg-gray-50 active:scale-95"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#071126] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-[#102042] disabled:opacity-60"
+                  className="inline-flex min-h-12 items-center justify-center rounded-xl sm:rounded-full bg-[#071126] px-8 py-3 text-xs font-bold uppercase tracking-[0.15em] text-white transition hover:bg-[#102042] shadow-lg active:scale-95 disabled:opacity-60"
                 >
                   {submitting ? <Loader2 size={18} className="mr-2 animate-spin" /> : <Save size={18} className="mr-2" />}
-                  {editingMember ? 'Save Changes' : 'Create Member'}
+                  {editingMember ? 'Update Member' : 'Save Member'}
                 </button>
               </div>
             </form>

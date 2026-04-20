@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { Quote, Trash2, Search, Loader2, CheckCircle2, XCircle, User, MessageSquare } from 'lucide-react';
 
@@ -7,19 +7,18 @@ const AdminTestimonies = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    fetchTestimonies();
-  }, []);
-
-  const fetchTestimonies = async () => {
-    setLoading(true);
+  const fetchTestimonies = useCallback(async () => {
     const { data } = await supabase
       .from('testimonies')
       .select('*')
       .order('created_at', { ascending: false });
     if (data) setTestimonies(data);
     setLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchTestimonies();
+  }, [fetchTestimonies]);
 
   const handleApprove = async (id, status) => {
     const { error } = await supabase

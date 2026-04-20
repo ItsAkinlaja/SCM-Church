@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { Video, Trash2, Plus, X, UploadCloud, Loader2, PlayCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -20,8 +20,7 @@ const Sermons = () => {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const fetchSermons = async () => {
-    setLoading(true);
+  const fetchSermons = useCallback(async () => {
     const { data, error } = await supabase
       .from('sermons')
       .select('*')
@@ -29,11 +28,11 @@ const Sermons = () => {
 
     if (!error && data) setSermons(data);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     fetchSermons();
-  }, []);
+  }, [fetchSermons]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +78,7 @@ const Sermons = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+    <div className="space-y-6 sm:space-y-12 pb-20 overflow-x-hidden">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900">Sermons & Media</h1>

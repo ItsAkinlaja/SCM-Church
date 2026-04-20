@@ -56,61 +56,60 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-scm-blue"></div>
-      </div>
-    );
-  }
-
   return (
-    <Router>
-      <Toaster position="top-right" />
-      <Routes>
-        {/* Public Routes */}
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/study-material" element={<StudyMaterial />} />
-          <Route path="/leadership" element={<Leadership />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/prayer-request" element={<PrayerRequest />} />
-          <Route path="/testimonies" element={<Testimonies />} />
-          <Route path="/support-us" element={<SupportUs />} />
-          <Route path="/gallery" element={<Gallery />} />
-        </Route>
+    <div id="scm-app-root" suppressHydrationWarning>
+      {loading ? (
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-scm-blue"></div>
+        </div>
+      ) : (
+        <Router>
+          <Routes>
+            {/* Public Routes */}
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/study-material" element={<StudyMaterial />} />
+              <Route path="/leadership" element={<Leadership />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/prayer-request" element={<PrayerRequest />} />
+              <Route path="/testimonies" element={<Testimonies />} />
+              <Route path="/support-us" element={<SupportUs />} />
+              <Route path="/gallery" element={<Gallery />} />
+            </Route>
 
-        {/* Admin Routes */}
-        <Route path="/admin/login" element={session ? <Navigate to="/admin/dashboard" /> : <Login />} />
-        
-        <Route
-          path="/admin"
-          element={session ? <AdminLayout /> : <Navigate to="/admin/login" />}
-        >
-          <Route index element={<Navigate to="/admin/dashboard" />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="communication" element={<AdminCommunication />} />
-          <Route path="events" element={<AdminEvents />} />
-          <Route path="pamphlets" element={<AdminPamphlets />} />
-          <Route path="members" element={<AdminMembers />} />
-          <Route path="announcements" element={<AdminAnnouncements />} />
-          <Route path="leaders" element={<AdminLeaders />} />
-          <Route path="prayer-requests" element={<AdminPrayerRequests />} />
-          <Route path="testimonies" element={<AdminTestimonies />} />
-          <Route path="settings" element={<AdminSettings />} />
-          <Route path="programmes" element={<AdminProgrammes />} />
-          <Route path="messages" element={<AdminMessages />} />
-          <Route path="subscribers" element={<AdminSubscribers />} />
-          <Route path="gallery" element={<AdminGallery />} />
-          <Route path="sermons" element={<AdminSermons />} />
-        </Route>
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={session ? <Navigate to="/admin/dashboard" /> : <Login />} />
+            
+            <Route
+              path="/admin"
+              element={session ? <AdminLayout /> : <Navigate to="/admin/login" />}
+            >
+              <Route index element={<Navigate to="/admin/dashboard" />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="communication" element={<AdminCommunication />} />
+              <Route path="events" element={<AdminEvents />} />
+              <Route path="pamphlets" element={<AdminPamphlets />} />
+              <Route path="members" element={<AdminMembers />} />
+              <Route path="announcements" element={<AdminAnnouncements />} />
+              <Route path="leaders" element={<AdminLeaders />} />
+              <Route path="prayer-requests" element={<AdminPrayerRequests />} />
+              <Route path="testimonies" element={<AdminTestimonies />} />
+              <Route path="settings" element={<AdminSettings />} />
+              <Route path="programmes" element={<AdminProgrammes />} />
+              <Route path="messages" element={<AdminMessages />} />
+              <Route path="subscribers" element={<AdminSubscribers />} />
+              <Route path="gallery" element={<AdminGallery />} />
+              <Route path="sermons" element={<AdminSermons />} />
+            </Route>
 
-        {/* Catch-all route */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Router>
+            {/* Catch-all route */}
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </Router>
+      )}
+    </div>
   );
 }
 

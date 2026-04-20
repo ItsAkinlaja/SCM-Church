@@ -7,19 +7,18 @@ const AdminPrayerRequests = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    const fetchRequests = async () => {
-      setLoading(true);
-      const { data } = await supabase
-        .from('prayer_requests')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (data) setRequests(data);
-      setLoading(false);
-    };
+  const fetchRequests = async () => {
+    const { data } = await supabase
+      .from('prayer_requests')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (data) setRequests(data);
+    setLoading(false);
+  };
 
+  useEffect(() => {
     fetchRequests();
-  }, []);
+  }, [fetchRequests]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this prayer request?')) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { Mail, RefreshCw, Trash2, CheckCircle, MailOpen } from 'lucide-react';
 
@@ -6,8 +6,7 @@ const Messages = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchMessages = async () => {
-    setLoading(true);
+  const fetchMessages = useCallback(async () => {
     const { data, error } = await supabase
       .from('messages')
       .select('*')
@@ -17,11 +16,11 @@ const Messages = () => {
       setMessages(data);
     }
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     fetchMessages();
-  }, []);
+  }, [fetchMessages]);
 
   const markAsRead = async (id, currentStatus) => {
     const { error } = await supabase

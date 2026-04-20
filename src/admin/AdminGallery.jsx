@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { Image as ImageIcon, Trash2, Plus, X, UploadCloud, Loader2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -12,10 +12,8 @@ const AdminGallery = () => {
   const [formData, setFormData] = useState({ title: '', image_url: '', category: 'General' });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const ikUploadRef = useRef(null);
 
-  const fetchGallery = async () => {
-    setLoading(true);
+  const fetchGallery = useCallback(async () => {
     const { data, error } = await supabase
       .from('gallery')
       .select('*')
@@ -23,11 +21,11 @@ const AdminGallery = () => {
 
     if (!error && data) setImages(data);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     fetchGallery();
-  }, []);
+  }, [fetchGallery]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +65,7 @@ const AdminGallery = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto pb-20 overflow-x-hidden">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900">Photo Gallery</h1>

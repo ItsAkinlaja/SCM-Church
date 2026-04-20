@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { IKContext, IKUpload } from 'imagekitio-react';
 import { imagekitConfig, IMAGEKIT_FOLDER_PATH, authenticator } from '../services/imagekit';
-import { FileText, Plus, Edit2, Trash2, Search, X, Save, Calendar, Download, FilePlus, Loader2, Sparkles, FileSearch, ArrowRight } from 'lucide-react';
+import { FileText, Plus, Edit2, Trash2, Search, X, Save, Calendar, Download, FilePlus, Loader2, FileSearch, ArrowRight } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const AdminPamphlets = () => {
@@ -21,20 +21,34 @@ const AdminPamphlets = () => {
     description: '',
   });
 
-  useEffect(() => {
-    const fetchPamphlets = async () => {
-      setLoading(true);
-      const { data } = await supabase
-        .from('weekly_materials')
-        .select('*')
-        .order('week_date', { ascending: false });
+  const fetchPamphlets = useCallback(async () => {
+    const { data } = await supabase
+      .from('weekly_materials')
+      .select('*')
+      .order('week_date', { ascending: false });
 
-      if (data) setPamphlets(data);
-      setLoading(false);
-    };
-
-    fetchPamphlets();
+    if (data) setPamphlets(data);
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    let ignore = false;
+    async function loadPamphlets() {
+      const { data } = await supabase
+        .from('pamphlets')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!ignore) {
+        if (data) setPamphlets(data);
+        setLoading(false);
+      }
+    }
+    loadPamphlets();
+    return () => {
+      ignore = true;
+    };
+  }, []); // Only fetch on mount, manual refreshes use fetchPamphlets
 
   const handleUploadSuccess = (res) => {
     setFormData({ ...formData, file_url: res.url });
@@ -50,14 +64,6 @@ const AdminPamphlets = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-
-    const fetchPamphlets = async () => {
-      const { data } = await supabase
-        .from('weekly_materials')
-        .select('*')
-        .order('week_date', { ascending: false });
-      if (data) setPamphlets(data);
-    };
 
     if (editingPamphlet) {
       const { error } = await supabase
@@ -93,14 +99,10 @@ const AdminPamphlets = () => {
         .delete()
         .eq('id', id);
       if (!error) {
-        const { data } = await supabase
-          .from('weekly_materials')
-          .select('*')
-          .order('week_date', { ascending: false });
-        if (data) setPamphlets(data);
+        fetchPamphlets();
         toast.success('Study guide deleted successfully!');
       } else {
-         toast.error('Failed to delete study guide: ' + error.message);
+        toast.error('Failed to delete study guide: ' + error.message);
       }
     }
   };
@@ -142,7 +144,6 @@ const AdminPamphlets = () => {
             <div>
                <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight">Study <span className="text-scm-gold">Materials</span></h1>
                <p className="text-gray-400 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs flex items-center">
-                  <Sparkles size={14} className="mr-2 text-scm-blue shrink-0" />
                   Library Count: {pamphlets.length} Guides
                </p>
             </div>

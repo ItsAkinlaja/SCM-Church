@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { IKContext, IKUpload } from 'imagekitio-react';
 import { imagekitConfig, IMAGEKIT_FOLDER_PATH, authenticator } from '../services/imagekit';
-import { Calendar, Plus, Edit2, Trash2, Search, X, Save, Clock, MapPin, Image, Loader2, CalendarIcon, ChevronRight, Sparkles } from 'lucide-react';
+import { Calendar, Plus, Edit2, Trash2, Search, X, Save, Clock, MapPin, Image, Loader2, CalendarIcon, ChevronRight } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const AdminEvents = () => {
@@ -22,20 +22,34 @@ const AdminEvents = () => {
     banner_url: '',
   });
 
+  const fetchEvents = useCallback(async () => {
+    const { data } = await supabase
+      .from('events')
+      .select('*')
+      .order('date', { ascending: true });
+
+    if (data) setEvents(data);
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
-    const fetchEvents = async () => {
-      setLoading(true);
+    let ignore = false;
+    async function loadEvents() {
       const { data } = await supabase
         .from('events')
         .select('*')
         .order('date', { ascending: true });
 
-      if (data) setEvents(data);
-      setLoading(false);
+      if (!ignore) {
+        if (data) setEvents(data);
+        setLoading(false);
+      }
+    }
+    loadEvents();
+    return () => {
+      ignore = true;
     };
-
-    fetchEvents();
-  }, []);
+  }, []); // Only fetch on mount, manual refreshes use fetchEvents
 
   const handleUploadSuccess = (res) => {
     setFormData({ ...formData, banner_url: res.url });
@@ -51,14 +65,6 @@ const AdminEvents = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-
-    const fetchEvents = async () => {
-      const { data } = await supabase
-        .from('events')
-        .select('*')
-        .order('date', { ascending: true });
-      if (data) setEvents(data);
-    };
 
     if (editingEvent) {
       const { error } = await supabase
@@ -132,19 +138,18 @@ const AdminEvents = () => {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-12 animate-fade-in pb-20 overflow-x-hidden">
+    <div className="space-y-6 sm:space-y-12 pb-20 overflow-x-hidden" translate="no" suppressHydrationWarning>
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8 bg-white p-6 sm:p-12 md:p-16 rounded-[30px] sm:rounded-[60px] shadow-2xl border border-gray-100 relative overflow-hidden group">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8 bg-white p-6 sm:p-12 md:p-16 rounded-[30px] sm:rounded-[60px] shadow-2xl border border-gray-100 relative overflow-hidden group" suppressHydrationWarning>
          <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-scm-red/5 rounded-full -mr-32 -mt-32 sm:-mr-48 sm:-mt-48 group-hover:scale-150 transition-transform duration-700"></div>
          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10 relative z-10 w-full md:w-auto">
             <div className="w-16 h-16 sm:w-24 sm:h-24 bg-scm-red text-white rounded-2xl sm:rounded-[40px] flex items-center justify-center shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500 shrink-0 mx-auto sm:mx-0">
-               <Calendar size={32} className="sm:w-12 sm:h-12" />
+               <span className="flex items-center justify-center"><Calendar size={32} className="sm:w-12 sm:h-12" /></span>
             </div>
             <div className="text-center sm:text-left">
-               <h1 className="text-2xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight">Ministry <span className="text-scm-red">Events</span></h1>
+               <h1 className="text-2xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight"><span>Ministry&nbsp;</span><span className="text-scm-red">Events</span></h1>
                <p className="text-gray-400 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs flex items-center justify-center sm:justify-start">
-                  <Sparkles size={14} className="mr-2 text-scm-gold shrink-0" />
-                  Scheduled Programs: {events.length}
+                  <span>Scheduled Programs:&nbsp;{events.length}</span>
                </p>
             </div>
          </div>
@@ -152,85 +157,100 @@ const AdminEvents = () => {
            onClick={() => openModal()}
            className="w-full md:w-auto mt-4 md:mt-0 px-6 sm:px-12 py-4 sm:py-6 bg-scm-blue text-white rounded-2xl sm:rounded-3xl font-black hover:bg-blue-900 transition-all shadow-xl hover:shadow-scm-blue/40 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center group relative z-10 overflow-hidden"
          >
-           <Plus size={20} className="mr-2 sm:mr-3 group-hover:rotate-90 transition-transform sm:w-6 sm:h-6" />
-           Schedule Event
+           <span className="flex items-center justify-center"><Plus size={20} className="mr-2 sm:mr-3 group-hover:rotate-90 transition-transform sm:w-6 sm:h-6" /></span>
+           <span>Schedule Event</span>
          </button>
       </div>
 
       {/* Events Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
-        {loading ? (
-          <div className="col-span-full py-24 flex flex-col items-center justify-center space-y-6">
-             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-scm-red"></div>
-             <p className="text-gray-400 font-black uppercase tracking-widest text-sm">Accessing Calendar...</p>
-          </div>
-        ) : events.map((event) => (
-          <div key={event.id} className="group bg-white rounded-[30px] sm:rounded-[50px] shadow-2xl border border-gray-100 overflow-hidden hover:border-scm-red/20 hover:scale-[1.03] transition-all duration-700 relative flex flex-col">
-             <div className="aspect-[16/10] overflow-hidden relative bg-scm-blue">
+      <div key="events-grid-container" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10" suppressHydrationWarning>
+        {/* Loading State */}
+        <div 
+          key="loading-state" 
+          style={{ display: loading ? 'flex' : 'none' }}
+          className="col-span-full py-24 flex-col items-center justify-center space-y-6"
+        >
+           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-scm-red"></div>
+           <p className="text-gray-400 font-black uppercase tracking-widest text-sm"><span>Accessing&nbsp;Calendar...</span></p>
+        </div>
+
+        {/* Empty State */}
+        <div 
+          key="empty-state"
+          style={{ display: (!loading && events.length === 0) ? 'flex' : 'none' }}
+          className="col-span-full py-32 bg-gray-50 rounded-[60px] border-4 border-dashed border-gray-100 flex-col items-center justify-center text-center px-10"
+        >
+           <span className="flex items-center justify-center mb-8"><Calendar size={80} className="text-gray-100" /></span>
+           <h3 className="text-3xl font-black text-gray-300 mb-4"><span>No&nbsp;events&nbsp;scheduled&nbsp;yet.</span></h3>
+           <p className="text-gray-400 font-medium max-w-sm mb-10"><span>Get&nbsp;started&nbsp;by&nbsp;clicking&nbsp;the&nbsp;button&nbsp;above&nbsp;to&nbsp;add&nbsp;your&nbsp;first&nbsp;ministry&nbsp;event.</span></p>
+           <button onClick={() => openModal()} className="px-10 py-5 bg-white text-scm-blue border-2 border-scm-blue/20 rounded-2xl font-black hover:bg-scm-blue hover:text-white transition-all shadow-xl"><span>Create&nbsp;First&nbsp;Event</span></button>
+        </div>
+
+        {/* Data Cards */}
+        {events.map((event) => (
+          <div 
+            key={event.id} 
+            style={{ display: (!loading && events.length > 0) ? 'flex' : 'none' }}
+            className="group bg-white rounded-[30px] sm:rounded-[50px] shadow-2xl border border-gray-100 overflow-hidden hover:border-scm-red/20 hover:scale-[1.03] transition-all duration-700 relative flex-col"
+            suppressHydrationWarning
+          >
+             <div className="aspect-[16/10] overflow-hidden relative bg-scm-blue" suppressHydrationWarning>
                 {event.banner_url ? (
                   <img src={event.banner_url} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-all duration-700 opacity-90" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-200">
-                     <CalendarIcon size={60} className="sm:w-20 sm:h-20" strokeWidth={1} />
+                     <span className="flex items-center justify-center"><CalendarIcon size={60} className="sm:w-20 sm:h-20" strokeWidth={1} /></span>
                   </div>
                 )}
                 
                 {/* Date Tag */}
-                <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-10">
+                <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-10" suppressHydrationWarning>
                    <div className="bg-white/95 backdrop-blur-md px-4 py-3 sm:px-5 sm:py-4 rounded-2xl sm:rounded-3xl shadow-2xl text-center min-w-[60px] sm:min-w-[70px] border border-gray-100 transform group-hover:-rotate-3 transition-transform">
-                      <div className="text-scm-red font-black text-xl sm:text-2xl leading-none mb-1">{new Date(event.date).getDate()}</div>
-                      <div className="text-gray-400 text-[8px] sm:text-[10px] font-black uppercase tracking-widest">{new Date(event.date).toLocaleDateString(undefined, { month: 'short' })}</div>
+                      <div className="text-scm-red font-black text-xl sm:text-2xl leading-none mb-1"><span>{new Date(event.date).getDate()}</span></div>
+                      <div className="text-gray-400 text-[8px] sm:text-[10px] font-black uppercase tracking-widest"><span>{new Date(event.date).toLocaleDateString(undefined, { month: 'short' })}</span></div>
                    </div>
                 </div>
 
                 {/* Hover Overlay Actions */}
-                <div className="absolute inset-0 bg-gradient-to-t from-scm-blue via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center p-6 sm:p-8">
+                <div className="absolute inset-0 bg-gradient-to-t from-scm-blue via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center p-6 sm:p-8" suppressHydrationWarning>
                    <div className="flex space-x-4 transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500">
                       <button onClick={() => openModal(event)} className="p-3 sm:p-4 bg-white text-scm-blue hover:bg-scm-blue hover:text-white rounded-xl sm:rounded-2xl shadow-xl transition-all transform hover:scale-110">
-                         <Edit2 size={18} className="sm:w-5 sm:h-5" />
+                         <span className="flex items-center justify-center"><Edit2 size={18} className="sm:w-5 sm:h-5" /></span>
                       </button>
                       <button onClick={() => handleDelete(event.id)} className="p-3 sm:p-4 bg-white text-scm-red hover:bg-scm-red hover:text-white rounded-xl sm:rounded-2xl shadow-xl transition-all transform hover:scale-110">
-                         <Trash2 size={18} className="sm:w-5 sm:h-5" />
+                         <span className="flex items-center justify-center"><Trash2 size={18} className="sm:w-5 sm:h-5" /></span>
                       </button>
                    </div>
                 </div>
              </div>
 
-             <div className="p-6 sm:p-10 flex-grow flex flex-col">
-                <h3 className="text-lg sm:text-2xl font-black text-gray-900 mb-4 sm:mb-6 group-hover:text-scm-red transition-colors line-clamp-1">{event.title}</h3>
+             <div className="p-6 sm:p-10 flex-grow flex flex-col" suppressHydrationWarning>
+                <h3 className="text-lg sm:text-2xl font-black text-gray-900 mb-4 sm:mb-6 group-hover:text-scm-red transition-colors line-clamp-1"><span>{event.title}</span></h3>
                 
-                <div className="space-y-4 sm:space-y-5 mb-8 sm:mb-10">
+                <div className="space-y-4 sm:space-y-5 mb-8 sm:mb-10" suppressHydrationWarning>
                    <div className="flex items-center text-xs sm:text-sm font-bold text-gray-600">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-50 rounded-lg sm:rounded-xl flex items-center justify-center mr-3 sm:mr-4 text-scm-red shrink-0">
-                         <Clock size={16} className="sm:w-[18px] sm:h-[18px]" />
+                         <span className="flex items-center justify-center"><Clock size={16} className="sm:w-[18px] sm:h-[18px]" /></span>
                       </div>
-                      <span className="truncate">{event.time ? new Date('1970-01-01T' + event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'All Day'}</span>
+                      <span className="truncate"><span>{event.time ? new Date('1970-01-01T' + event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'All Day'}</span></span>
                    </div>
                    <div className="flex items-center text-xs sm:text-sm font-bold text-gray-600">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-50 rounded-lg sm:rounded-xl flex items-center justify-center mr-3 sm:mr-4 text-scm-red shrink-0">
-                         <MapPin size={16} className="sm:w-[18px] sm:h-[18px]" />
+                         <span className="flex items-center justify-center"><MapPin size={16} className="sm:w-[18px] sm:h-[18px]" /></span>
                       </div>
-                      <span className="line-clamp-1">{event.location || 'TBA'}</span>
+                      <span className="line-clamp-1"><span>{event.location || 'TBA'}</span></span>
                    </div>
                 </div>
 
-                <div className="mt-auto pt-4 sm:pt-6 border-t border-gray-50 flex justify-between items-center">
-                   <span className="text-[8px] sm:text-[10px] font-black text-gray-300 uppercase tracking-widest">Added {new Date(event.created_at).toLocaleDateString()}</span>
+                <div className="mt-auto pt-4 sm:pt-6 border-t border-gray-50 flex justify-between items-center" suppressHydrationWarning>
+                   <span className="text-[8px] sm:text-[10px] font-black text-gray-300 uppercase tracking-widest"><span>Added&nbsp;{new Date(event.created_at).toLocaleDateString()}</span></span>
                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-50 text-gray-300 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:bg-scm-red group-hover:text-white transition-colors shrink-0">
-                      <ChevronRight size={18} className="sm:w-5 sm:h-5" />
+                      <span className="flex items-center justify-center"><ChevronRight size={18} className="sm:w-5 sm:h-5" /></span>
                    </div>
                 </div>
              </div>
           </div>
         ))}
-        {events.length === 0 && !loading && (
-          <div className="col-span-full py-32 bg-gray-50 rounded-[60px] border-4 border-dashed border-gray-100 flex flex-col items-center justify-center text-center px-10">
-             <Calendar size={80} className="text-gray-100 mb-8" />
-             <h3 className="text-3xl font-black text-gray-300 mb-4">No events scheduled yet.</h3>
-             <p className="text-gray-400 font-medium max-w-sm mb-10">Get started by clicking the button above to add your first ministry event.</p>
-             <button onClick={() => openModal()} className="px-10 py-5 bg-white text-scm-blue border-2 border-scm-blue/20 rounded-2xl font-black hover:bg-scm-blue hover:text-white transition-all shadow-xl">Create First Event</button>
-          </div>
-        )}
       </div>
 
       {/* Modal */}

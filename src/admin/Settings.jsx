@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient';
-import { Settings as SettingsIcon, Save, Globe, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Loader2, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { Settings as SettingsIcon, Save, Globe, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Loader2, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { IKContext, IKUpload } from 'imagekitio-react';
 import { imagekitConfig, IMAGEKIT_FOLDER_PATH, authenticator } from '../services/imagekit';
@@ -29,22 +29,40 @@ const Settings = () => {
     hero_slides: []
   });
 
+  const fetchSettings = useCallback(async () => {
+    const { data } = await supabase
+      .from('settings')
+      .select('*')
+      .single();
+
+    if (data) {
+      setSettings(data);
+    }
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
-    const fetchSettings = async () => {
-      setLoading(true);
+    let ignore = false;
+    
+    async function loadSettings() {
       const { data } = await supabase
         .from('settings')
         .select('*')
         .single();
 
-      if (data) {
-        setSettings(data);
+      if (!ignore) {
+        if (data) {
+          setSettings(data);
+        }
+        setLoading(false);
       }
-      setLoading(false);
-    };
+    }
 
-    fetchSettings();
-  }, []);
+    loadSettings();
+    return () => {
+      ignore = true;
+    };
+  }, []); // Only fetch on mount, fetchSettings can be used manually if needed
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,7 +119,7 @@ const Settings = () => {
                 <input
                   required
                   className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:outline-none focus:border-scm-blue focus:ring-4 focus:ring-scm-blue/5 transition-all font-bold text-gray-900"
-                  value={settings.ministry_name}
+                  value={settings.ministry_name || ''}
                   onChange={(e) => setSettings({ ...settings, ministry_name: e.target.value })}
                   placeholder="Successful Christian Missions"
                 />
@@ -113,7 +131,7 @@ const Settings = () => {
                   <textarea
                     rows="3"
                     className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:outline-none focus:border-scm-blue focus:ring-4 focus:ring-scm-blue/5 transition-all font-bold text-gray-900"
-                    value={settings.vision}
+                    value={settings.vision || ''}
                     onChange={(e) => setSettings({ ...settings, vision: e.target.value })}
                     placeholder="Enter ministry vision..."
                   />
@@ -123,7 +141,7 @@ const Settings = () => {
                   <textarea
                     rows="3"
                     className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:outline-none focus:border-scm-blue focus:ring-4 focus:ring-scm-blue/5 transition-all font-bold text-gray-900"
-                    value={settings.mission}
+                    value={settings.mission || ''}
                     onChange={(e) => setSettings({ ...settings, mission: e.target.value })}
                     placeholder="Enter ministry mission..."
                   />
@@ -135,7 +153,7 @@ const Settings = () => {
                 <textarea
                   rows="5"
                   className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:outline-none focus:border-scm-blue focus:ring-4 focus:ring-scm-blue/5 transition-all font-bold text-gray-900"
-                  value={settings.description}
+                  value={settings.description || ''}
                   onChange={(e) => setSettings({ ...settings, description: e.target.value })}
                 />
               </div>
@@ -151,7 +169,7 @@ const Settings = () => {
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                      <input
                        className="px-4 py-3 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-bold text-sm"
-                       value={pillar.title}
+                       value={pillar.title || ''}
                        onChange={(e) => {
                          const newPillars = [...settings.pillars];
                          newPillars[idx].title = e.target.value;
@@ -161,7 +179,7 @@ const Settings = () => {
                      />
                      <input
                        className="px-4 py-3 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-bold text-sm"
-                       value={pillar.icon}
+                       value={pillar.icon || ''}
                        onChange={(e) => {
                          const newPillars = [...settings.pillars];
                          newPillars[idx].icon = e.target.value;
@@ -171,7 +189,7 @@ const Settings = () => {
                      />
                      <textarea
                        className="px-4 py-3 sm:col-span-2 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-medium text-sm"
-                       value={pillar.description}
+                       value={pillar.description || ''}
                        onChange={(e) => {
                          const newPillars = [...settings.pillars];
                          newPillars[idx].description = e.target.value;
@@ -195,7 +213,7 @@ const Settings = () => {
                    <div className="grid grid-cols-1 gap-4">
                      <input
                        className="px-4 py-3 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-bold text-sm"
-                       value={slide.title}
+                       value={slide.title || ''}
                        onChange={(e) => {
                          const newSlides = [...settings.hero_slides];
                          newSlides[idx].title = e.target.value;
@@ -205,7 +223,7 @@ const Settings = () => {
                      />
                      <input
                        className="px-4 py-3 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-bold text-sm"
-                       value={slide.tag}
+                       value={slide.tag || ''}
                        onChange={(e) => {
                          const newSlides = [...settings.hero_slides];
                          newSlides[idx].tag = e.target.value;
@@ -244,7 +262,7 @@ const Settings = () => {
                      </div>
                      <textarea
                        className="px-4 py-3 bg-white border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue font-medium text-sm"
-                       value={slide.subtitle}
+                       value={slide.subtitle || ''}
                        onChange={(e) => {
                          const newSlides = [...settings.hero_slides];
                          newSlides[idx].subtitle = e.target.value;
@@ -273,7 +291,7 @@ const Settings = () => {
                   <Phone size={18} className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-scm-blue transition-colors" />
                   <input
                     className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:outline-none focus:border-scm-blue focus:ring-4 focus:ring-scm-blue/5 transition-all font-bold text-gray-900"
-                    value={settings.phone}
+                    value={settings.phone || ''}
                     onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
                     placeholder="+234..."
                   />
@@ -286,7 +304,7 @@ const Settings = () => {
                   <input
                     type="email"
                     className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:outline-none focus:border-scm-blue focus:ring-4 focus:ring-scm-blue/5 transition-all font-bold text-gray-900"
-                    value={settings.email}
+                    value={settings.email || ''}
                     onChange={(e) => setSettings({ ...settings, email: e.target.value })}
                     placeholder="info@scm.org"
                   />
@@ -297,7 +315,7 @@ const Settings = () => {
                 <textarea
                   rows="3"
                   className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:outline-none focus:border-scm-blue focus:ring-4 focus:ring-scm-blue/5 transition-all font-bold text-gray-900"
-                  value={settings.address}
+                  value={settings.address || ''}
                   onChange={(e) => setSettings({ ...settings, address: e.target.value })}
                   placeholder="Enter full address..."
                 />
@@ -371,7 +389,7 @@ const Settings = () => {
                   </label>
                   <input
                     className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-100 rounded-xl focus:outline-none focus:border-scm-blue transition-all font-bold text-gray-900 text-sm"
-                    value={settings.social_links[social.key]}
+                    value={settings.social_links[social.key] || ''}
                     onChange={(e) => setSettings({ 
                       ...settings, 
                       social_links: { ...settings.social_links, [social.key]: e.target.value } 
