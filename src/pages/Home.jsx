@@ -245,26 +245,17 @@ const Home = () => {
             </Link>
           </div>
           
-          <a 
-            href={latestSermon?.video_url || '#'} 
-            target="_blank" 
-            rel="noreferrer"
-            className="relative aspect-video w-full rounded-none md:rounded-2xl overflow-hidden group cursor-pointer border border-white/5 bg-slate-900 shadow-2xl block"
-          >
-            <img 
-              src={latestSermon?.thumbnail_url || "https://images.unsplash.com/photo-1551829142-d9b8e5fa666e?auto=format&fit=crop&q=80"} 
-              alt="Latest Sermon" 
-              className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-700 group-hover:scale-105" 
+          <div className="relative aspect-video w-full rounded-none md:rounded-2xl overflow-hidden border border-white/5 bg-slate-900 shadow-2xl">
+            <iframe
+              src="https://www.youtube.com/embed/GKMksqVfiKA?start=251&end=260&autoplay=0&mute=0&controls=1&modestbranding=1&rel=0"
+              title="Latest Sermon"
+              className="absolute inset-0 w-full h-full"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050b14]/90 via-[#050b14]/30 to-transparent" />
             
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:bg-scm-accent group-hover:border-scm-accent transition-all duration-500 scale-90 group-hover:scale-100 shadow-2xl">
-                <Play fill="currentColor" size={28} className="ml-1 text-white" />
-              </div>
-            </div>
-
-            <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 md:p-12">
+            <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 md:p-12 bg-gradient-to-t from-[#050b14]/90 via-[#050b14]/30 to-transparent">
               <div className="inline-block px-3 py-1 bg-white/10 backdrop-blur border border-white/10 text-white text-[9px] font-sans font-bold uppercase tracking-widest mb-3 md:mb-4 rounded-md">Latest Message</div>
               <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold mb-2 md:mb-3 tracking-tight">
                 {latestSermon?.title || "The Power of Unwavering Faith"}
@@ -273,7 +264,7 @@ const Home = () => {
                 {latestSermon ? `${latestSermon.preacher} • ${latestSermon.service_type}` : `Pastor (Prof.) Rufus A. Adedoyin • Sunday Service`}
               </p>
             </div>
-          </a>
+          </div>
         </div>
       </section>
 

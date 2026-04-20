@@ -48,9 +48,9 @@ const SupportUs = () => {
             <h3 className="text-3xl font-black text-gray-900 mb-4 group-hover:text-scm-red transition-colors">Bank Transfer</h3>
             <p className="text-gray-500 font-medium mb-8">You can also give directly through a bank transfer to the ministry's account.</p>
             <div className="text-left pt-6 border-t border-gray-100">
-              <p className="font-bold text-gray-700"><strong>Bank:</strong> First Bank Nigeria</p>
+              <p className="font-bold text-gray-700"><strong>Bank:</strong> Guaranty Trust Bank (GTB)</p>
               <p className="font-bold text-gray-700"><strong>Account Name:</strong> Successful Christian Missions</p>
-              <p className="font-bold text-gray-700"><strong>Account Number:</strong> 2000564133</p>
+              <p className="font-bold text-gray-700"><strong>Account Number:</strong> 0134762251</p>
             </div>
           </div>
         </div>
