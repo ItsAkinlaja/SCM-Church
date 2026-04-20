@@ -96,17 +96,17 @@ const AdminAnnouncements = () => {
   };
 
   return (
-    <div className="space-y-12 animate-fade-in pb-20">
+    <div className="space-y-6 sm:space-y-12 animate-fade-in pb-20 overflow-x-hidden">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8 bg-white p-6 sm:p-12 md:p-16 rounded-[30px] sm:rounded-[60px] shadow-2xl border border-gray-100 relative overflow-hidden group">
          <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-scm-blue/5 rounded-full -mr-32 -mt-32 sm:-mr-48 sm:-mt-48 group-hover:scale-150 transition-transform duration-700"></div>
          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10 relative z-10 w-full md:w-auto">
-            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-scm-blue text-white rounded-2xl sm:rounded-[40px] flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500 shrink-0">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-scm-blue text-white rounded-2xl sm:rounded-[40px] flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500 shrink-0 mx-auto sm:mx-0">
                <Megaphone size={32} className="sm:w-12 sm:h-12" />
             </div>
-            <div>
-               <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight">Ministry <span className="text-scm-blue">Alerts</span></h1>
-               <p className="text-gray-400 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs flex items-center">
+            <div className="text-center sm:text-left">
+               <h1 className="text-2xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight">Ministry <span className="text-scm-blue">Alerts</span></h1>
+               <p className="text-gray-400 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs flex items-center justify-center sm:justify-start">
                   <BellRing size={14} className="mr-2 text-scm-red animate-bounce shrink-0" />
                   Active Updates: {announcements.length}
                </p>
@@ -116,13 +116,13 @@ const AdminAnnouncements = () => {
            onClick={() => openModal()}
            className="w-full md:w-auto mt-4 md:mt-0 px-6 sm:px-12 py-4 sm:py-6 bg-scm-red text-white rounded-2xl sm:rounded-3xl font-black hover:bg-red-700 transition-all shadow-xl hover:shadow-red-900/40 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center group relative z-10 overflow-hidden"
          >
-           <Send size={20} className="mr-2 sm:mr-3 group-hover:translate-x-1 transition-transform sm:w-6 sm:h-6" />
+           <Plus size={20} className="mr-2 sm:mr-3 group-hover:translate-x-1 transition-transform sm:w-6 sm:h-6" />
            Post Announcement
          </button>
       </div>
 
       {/* Announcements List */}
-      <div className="grid grid-cols-1 gap-10">
+      <div className="grid grid-cols-1 gap-6 sm:gap-10">
         {loading ? (
           <div className="py-32 flex flex-col items-center justify-center space-y-6">
              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-scm-blue"></div>
@@ -141,18 +141,18 @@ const AdminAnnouncements = () => {
                       New
                    </span>
                 </div>
-                <p className="text-gray-500 font-medium text-base sm:text-lg leading-relaxed">{ann.content}</p>
-                <div className="flex items-center justify-center md:justify-start text-[10px] sm:text-xs font-black text-gray-300 uppercase tracking-widest pt-4 border-t border-gray-50">
+                <p className="text-gray-500 font-medium text-sm sm:text-lg leading-relaxed">{ann.content}</p>
+                <div className="flex items-center justify-center md:justify-start text-[8px] sm:text-xs font-black text-gray-300 uppercase tracking-widest pt-4 border-t border-gray-50">
                    <Clock size={14} className="mr-2 shrink-0" /> Published on {new Date(ann.created_at).toLocaleDateString(undefined, { dateStyle: 'long' })}
                 </div>
              </div>
 
-             <div className="flex space-x-4 opacity-0 group-hover:opacity-100 transition-all transform translate-x-10 group-hover:translate-x-0">
-                <button onClick={() => openModal(ann)} className="p-5 bg-white text-gray-400 hover:text-scm-blue hover:bg-scm-blue/5 rounded-2xl border border-gray-100 shadow-xl transition-all hover:scale-110">
-                  <Edit2 size={24} />
+             <div className="flex space-x-4 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all transform translate-x-0 md:translate-x-10 group-hover:translate-x-0">
+                <button onClick={() => openModal(ann)} className="p-3 sm:p-5 bg-white text-gray-400 hover:text-scm-blue hover:bg-scm-blue/5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xl transition-all hover:scale-110">
+                  <Edit2 size={20} className="sm:w-6 sm:h-6" />
                 </button>
-                <button onClick={() => handleDelete(ann.id)} className="p-5 bg-white text-gray-400 hover:text-scm-red hover:bg-scm-red/5 rounded-2xl border border-gray-100 shadow-xl transition-all hover:scale-110">
-                  <Trash2 size={24} />
+                <button onClick={() => handleDelete(ann.id)} className="p-3 sm:p-5 bg-white text-gray-400 hover:text-scm-red hover:bg-scm-red/5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xl transition-all hover:scale-110">
+                  <Trash2 size={20} className="sm:w-6 sm:h-6" />
                 </button>
              </div>
           </div>

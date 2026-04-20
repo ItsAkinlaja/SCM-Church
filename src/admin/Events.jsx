@@ -132,17 +132,17 @@ const AdminEvents = () => {
   };
 
   return (
-    <div className="space-y-12 animate-fade-in pb-20">
+    <div className="space-y-6 sm:space-y-12 animate-fade-in pb-20 overflow-x-hidden">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8 bg-white p-6 sm:p-12 md:p-16 rounded-[30px] sm:rounded-[60px] shadow-2xl border border-gray-100 relative overflow-hidden group">
          <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-scm-red/5 rounded-full -mr-32 -mt-32 sm:-mr-48 sm:-mt-48 group-hover:scale-150 transition-transform duration-700"></div>
          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10 relative z-10 w-full md:w-auto">
-            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-scm-red text-white rounded-2xl sm:rounded-[40px] flex items-center justify-center shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500 shrink-0">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-scm-red text-white rounded-2xl sm:rounded-[40px] flex items-center justify-center shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500 shrink-0 mx-auto sm:mx-0">
                <Calendar size={32} className="sm:w-12 sm:h-12" />
             </div>
-            <div>
-               <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight">Ministry <span className="text-scm-red">Events</span></h1>
-               <p className="text-gray-400 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs flex items-center">
+            <div className="text-center sm:text-left">
+               <h1 className="text-2xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-2 sm:mb-3 leading-tight">Ministry <span className="text-scm-red">Events</span></h1>
+               <p className="text-gray-400 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs flex items-center justify-center sm:justify-start">
                   <Sparkles size={14} className="mr-2 text-scm-gold shrink-0" />
                   Scheduled Programs: {events.length}
                </p>
@@ -158,66 +158,66 @@ const AdminEvents = () => {
       </div>
 
       {/* Events Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
         {loading ? (
           <div className="col-span-full py-24 flex flex-col items-center justify-center space-y-6">
              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-scm-red"></div>
              <p className="text-gray-400 font-black uppercase tracking-widest text-sm">Accessing Calendar...</p>
           </div>
         ) : events.map((event) => (
-          <div key={event.id} className="group bg-white rounded-[50px] shadow-2xl border border-gray-100 overflow-hidden hover:border-scm-red/20 hover:scale-[1.03] transition-all duration-700 relative flex flex-col">
+          <div key={event.id} className="group bg-white rounded-[30px] sm:rounded-[50px] shadow-2xl border border-gray-100 overflow-hidden hover:border-scm-red/20 hover:scale-[1.03] transition-all duration-700 relative flex flex-col">
              <div className="aspect-[16/10] overflow-hidden relative bg-scm-blue">
                 {event.banner_url ? (
                   <img src={event.banner_url} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-all duration-700 opacity-90" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-200">
-                     <CalendarIcon size={80} strokeWidth={1} />
+                     <CalendarIcon size={60} className="sm:w-20 sm:h-20" strokeWidth={1} />
                   </div>
                 )}
                 
                 {/* Date Tag */}
-                <div className="absolute top-8 left-8 z-10">
-                   <div className="bg-white/95 backdrop-blur-md px-5 py-4 rounded-3xl shadow-2xl text-center min-w-[70px] border border-gray-100 transform group-hover:-rotate-3 transition-transform">
-                      <div className="text-scm-red font-black text-2xl leading-none mb-1">{new Date(event.date).getDate()}</div>
-                      <div className="text-gray-400 text-[10px] font-black uppercase tracking-widest">{new Date(event.date).toLocaleDateString(undefined, { month: 'short' })}</div>
+                <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-10">
+                   <div className="bg-white/95 backdrop-blur-md px-4 py-3 sm:px-5 sm:py-4 rounded-2xl sm:rounded-3xl shadow-2xl text-center min-w-[60px] sm:min-w-[70px] border border-gray-100 transform group-hover:-rotate-3 transition-transform">
+                      <div className="text-scm-red font-black text-xl sm:text-2xl leading-none mb-1">{new Date(event.date).getDate()}</div>
+                      <div className="text-gray-400 text-[8px] sm:text-[10px] font-black uppercase tracking-widest">{new Date(event.date).toLocaleDateString(undefined, { month: 'short' })}</div>
                    </div>
                 </div>
 
                 {/* Hover Overlay Actions */}
-                <div className="absolute inset-0 bg-gradient-to-t from-scm-blue via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center p-8">
+                <div className="absolute inset-0 bg-gradient-to-t from-scm-blue via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center p-6 sm:p-8">
                    <div className="flex space-x-4 transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500">
-                      <button onClick={() => openModal(event)} className="p-4 bg-white text-scm-blue hover:bg-scm-blue hover:text-white rounded-2xl shadow-xl transition-all transform hover:scale-110">
-                         <Edit2 size={20} />
+                      <button onClick={() => openModal(event)} className="p-3 sm:p-4 bg-white text-scm-blue hover:bg-scm-blue hover:text-white rounded-xl sm:rounded-2xl shadow-xl transition-all transform hover:scale-110">
+                         <Edit2 size={18} className="sm:w-5 sm:h-5" />
                       </button>
-                      <button onClick={() => handleDelete(event.id)} className="p-4 bg-white text-scm-red hover:bg-scm-red hover:text-white rounded-2xl shadow-xl transition-all transform hover:scale-110">
-                         <Trash2 size={20} />
+                      <button onClick={() => handleDelete(event.id)} className="p-3 sm:p-4 bg-white text-scm-red hover:bg-scm-red hover:text-white rounded-xl sm:rounded-2xl shadow-xl transition-all transform hover:scale-110">
+                         <Trash2 size={18} className="sm:w-5 sm:h-5" />
                       </button>
                    </div>
                 </div>
              </div>
 
              <div className="p-6 sm:p-10 flex-grow flex flex-col">
-                <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-4 sm:mb-6 group-hover:text-scm-red transition-colors line-clamp-1">{event.title}</h3>
+                <h3 className="text-lg sm:text-2xl font-black text-gray-900 mb-4 sm:mb-6 group-hover:text-scm-red transition-colors line-clamp-1">{event.title}</h3>
                 
-                <div className="space-y-5 mb-10">
-                   <div className="flex items-center text-sm font-bold text-gray-600">
-                      <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center mr-4 text-scm-red">
-                         <Clock size={18} />
+                <div className="space-y-4 sm:space-y-5 mb-8 sm:mb-10">
+                   <div className="flex items-center text-xs sm:text-sm font-bold text-gray-600">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-50 rounded-lg sm:rounded-xl flex items-center justify-center mr-3 sm:mr-4 text-scm-red shrink-0">
+                         <Clock size={16} className="sm:w-[18px] sm:h-[18px]" />
                       </div>
-                      {event.time ? new Date('1970-01-01T' + event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'All Day'}
+                      <span className="truncate">{event.time ? new Date('1970-01-01T' + event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'All Day'}</span>
                    </div>
-                   <div className="flex items-center text-sm font-bold text-gray-600">
-                      <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center mr-4 text-scm-red">
-                         <MapPin size={18} />
+                   <div className="flex items-center text-xs sm:text-sm font-bold text-gray-600">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-50 rounded-lg sm:rounded-xl flex items-center justify-center mr-3 sm:mr-4 text-scm-red shrink-0">
+                         <MapPin size={16} className="sm:w-[18px] sm:h-[18px]" />
                       </div>
                       <span className="line-clamp-1">{event.location || 'TBA'}</span>
                    </div>
                 </div>
 
-                <div className="mt-auto pt-6 border-t border-gray-50 flex justify-between items-center">
-                   <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Added {new Date(event.created_at).toLocaleDateString()}</span>
-                   <div className="w-10 h-10 bg-gray-50 text-gray-300 rounded-xl flex items-center justify-center group-hover:bg-scm-red group-hover:text-white transition-colors">
-                      <ChevronRight size={20} />
+                <div className="mt-auto pt-4 sm:pt-6 border-t border-gray-50 flex justify-between items-center">
+                   <span className="text-[8px] sm:text-[10px] font-black text-gray-300 uppercase tracking-widest">Added {new Date(event.created_at).toLocaleDateString()}</span>
+                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-50 text-gray-300 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:bg-scm-red group-hover:text-white transition-colors shrink-0">
+                      <ChevronRight size={18} className="sm:w-5 sm:h-5" />
                    </div>
                 </div>
              </div>

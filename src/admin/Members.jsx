@@ -331,32 +331,32 @@ const Members = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <section className="overflow-hidden rounded-[2rem] border border-[#eadfca] bg-white shadow-[0_22px_70px_rgba(7,17,38,0.08)]">
-        <div className="grid gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:py-10">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in pb-20 overflow-x-hidden">
+      <section className="overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-[#eadfca] bg-white shadow-[0_22px_70px_rgba(7,17,38,0.08)]">
+        <div className="grid gap-6 sm:gap-8 px-5 py-6 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:py-10">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#efd7d2] bg-[#fff1ee] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.26em] text-[#b53a2d]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#efd7d2] bg-[#fff1ee] px-3 py-1.5 sm:px-4 sm:py-2 text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.26em] text-[#b53a2d]">
               <Users size={14} />
               Members Administration
             </div>
-            <h2 className="mt-5 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            <h2 className="mt-4 sm:mt-5 text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl leading-tight">
               Build and manage your church member directory beautifully.
             </h2>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">
+            <p className="mt-4 sm:mt-5 max-w-2xl text-sm sm:text-base leading-relaxed sm:leading-8 text-slate-600">
               Add members one by one, search quickly, export records, or import an entire list from CSV when you need to onboard many people at once.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
               <button
                 onClick={() => openModal()}
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#071126] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-[#102042]"
+                className="w-full sm:w-auto inline-flex min-h-12 items-center justify-center rounded-full bg-[#071126] px-6 py-3 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-white transition hover:bg-[#102042]"
               >
                 <Plus size={18} className="mr-2" />
                 Add Member
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#eadfca] bg-[#fbf7eb] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-slate-700 transition hover:border-[#d8c5bb] hover:text-[#b53a2d]"
+                className="w-full sm:w-auto inline-flex min-h-12 items-center justify-center rounded-full border border-[#eadfca] bg-[#fbf7eb] px-6 py-3 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-slate-700 transition hover:border-[#d8c5bb] hover:text-[#b53a2d]"
               >
                 <Upload size={18} className="mr-2" />
                 Import CSV
@@ -364,18 +364,20 @@ const Members = () => {
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
             {[
               { label: 'Total Members', value: members.length, icon: Users },
               { label: 'Departments', value: new Set(members.map((member) => member.department).filter(Boolean)).size, icon: FileSpreadsheet },
               { label: 'CSV Ready', value: 'Yes', icon: Upload },
             ].map((item) => (
-              <div key={item.label} className="rounded-[1.5rem] border border-[#eadfca] bg-[#fbf7eb] p-5">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#b53a2d] shadow-sm">
-                  <item.icon size={20} />
+              <div key={item.label} className="rounded-[1.2rem] sm:rounded-[1.5rem] border border-[#eadfca] bg-[#fbf7eb] p-4 sm:p-5 flex flex-row sm:flex-col items-center sm:items-start gap-4 sm:gap-0">
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-white text-[#b53a2d] shadow-sm shrink-0">
+                  <item.icon size={18} className="sm:w-5 sm:h-5" />
                 </div>
-                <div className="mt-5 text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">{item.label}</div>
-                <div className="mt-2 text-3xl font-bold tracking-tight text-slate-900">{loading ? '...' : item.value}</div>
+                <div>
+                  <div className="sm:mt-5 text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">{item.label}</div>
+                  <div className="sm:mt-2 text-xl sm:text-3xl font-bold tracking-tight text-slate-900">{loading ? '...' : item.value}</div>
+                </div>
               </div>
             ))}
           </div>
@@ -384,7 +386,7 @@ const Members = () => {
 
       {notice && (
         <div
-          className={`rounded-[1.5rem] border px-5 py-4 text-sm font-medium ${
+          className={`rounded-[1.2rem] sm:rounded-[1.5rem] border px-4 py-3 sm:px-5 sm:py-4 text-xs sm:text-sm font-medium ${
             notice.type === 'error'
               ? 'border-[#f0c6be] bg-[#fff1ee] text-[#8d3024]'
               : notice.type === 'warning'
@@ -397,7 +399,7 @@ const Members = () => {
       )}
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[2rem] border border-[#eadfca] bg-white p-6 shadow-[0_20px_55px_rgba(7,17,38,0.06)] sm:p-8">
+        <div className="rounded-[1.5rem] sm:rounded-[2rem] border border-[#eadfca] bg-white p-5 sm:p-8 shadow-[0_20px_55px_rgba(7,17,38,0.06)]">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:flex-1">
               <div className="relative w-full sm:max-w-xs">
@@ -405,7 +407,7 @@ const Members = () => {
                 <input
                   type="text"
                   placeholder="Search members..."
-                  className="w-full rounded-2xl border border-[#eadfca] bg-[#fbf7eb] py-4 pl-12 pr-4 text-sm font-medium text-slate-800 outline-none transition focus:border-[#d8c5bb] focus:bg-white"
+                  className="w-full rounded-2xl border border-[#eadfca] bg-[#fbf7eb] py-3.5 sm:py-4 pl-12 pr-4 text-sm font-medium text-slate-800 outline-none transition focus:border-[#d8c5bb] focus:bg-white"
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                 />
@@ -414,7 +416,7 @@ const Members = () => {
               <div className="relative w-full sm:max-w-[200px]">
                 <FileSpreadsheet className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                 <select
-                  className="w-full appearance-none rounded-2xl border border-[#eadfca] bg-[#fbf7eb] py-4 pl-12 pr-10 text-sm font-bold text-slate-700 outline-none transition focus:border-[#d8c5bb] focus:bg-white"
+                  className="w-full appearance-none rounded-2xl border border-[#eadfca] bg-[#fbf7eb] py-3.5 sm:py-4 pl-12 pr-10 text-sm font-bold text-slate-700 outline-none transition focus:border-[#d8c5bb] focus:bg-white"
                   value={selectedDepartment}
                   onChange={(e) => setSelectedDepartment(e.target.value)}
                 >
@@ -435,7 +437,7 @@ const Members = () => {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={handleExportCsv}
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#eadfca] bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition hover:border-[#d8c5bb] hover:text-[#b53a2d]"
+                className="w-full sm:w-auto inline-flex min-h-11 items-center justify-center rounded-full border border-[#eadfca] bg-white px-5 py-2 text-xs sm:text-sm font-semibold text-slate-700 transition hover:border-[#d8c5bb] hover:text-[#b53a2d]"
               >
                 <Download size={16} className="mr-2" />
                 Export CSV
