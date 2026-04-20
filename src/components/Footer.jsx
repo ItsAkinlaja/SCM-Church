@@ -161,7 +161,7 @@ const Footer = () => {
                </p>
                <p className="flex items-center gap-4">
                  <Mail size={16} className="text-scm-accent shrink-0 opacity-80" />
-                 <span>{settings?.email || 'reach@scmchurch.org'}</span>
+                 <span>{settings?.email || 'info@scmchurch.org'}</span>
                </p>
             </div>
           </div>
