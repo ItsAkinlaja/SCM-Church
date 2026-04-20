@@ -30,13 +30,15 @@ const SupportUs = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
           <div className="bg-white p-12 rounded-[40px] shadow-2xl border border-gray-100 hover:border-scm-blue/20 hover:scale-[1.03] transition-all duration-500 group">
             <div className="w-16 h-16 bg-scm-blue text-white rounded-2xl flex items-center justify-center mb-8 shadow-xl group-hover:rotate-12 transition-all duration-500">
-              <Banknote size={28} />
+              <Heart size={28} />
             </div>
-            <h3 className="text-3xl font-black text-gray-900 mb-4 group-hover:text-scm-blue transition-colors">Online Giving</h3>
-            <p className="text-gray-500 font-medium mb-8">Securely give a one-time or recurring gift online using your debit or credit card.</p>
-            <a href="#" className="font-black text-scm-blue group-hover:text-scm-red transition-colors flex items-center">
-              Give Online <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
-            </a>
+            <h3 className="text-3xl font-black text-gray-900 mb-4 group-hover:text-scm-blue transition-colors">Ministry Partnerships</h3>
+            <p className="text-gray-500 font-medium mb-8">Join us in our mission through regular partnerships and support for specific church projects.</p>
+            <div className="text-left pt-6 border-t border-gray-100">
+              <p className="font-bold text-gray-700"><strong>Outreach:</strong> Community & Global Missions</p>
+              <p className="font-bold text-gray-700"><strong>Welfare:</strong> Supporting those in need</p>
+              <p className="font-bold text-gray-700"><strong>Projects:</strong> Church Building & Facilities</p>
+            </div>
           </div>
 
           <div className="bg-white p-12 rounded-[40px] shadow-2xl border border-gray-100 hover:border-scm-red/20 hover:scale-[1.03] transition-all duration-500 group">
@@ -56,7 +58,7 @@ const SupportUs = () => {
         {/* Thank You Note */}
         <div className="text-center mt-24 max-w-3xl mx-auto">
           <h4 className="text-2xl font-black text-gray-800">A Grateful Heart</h4>
-          <p className="mt-4 text-gray-500 font-medium text-lg">
+          <p className="mt-4 text-gray-500 font-medium text-lg italic">
             "Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver." - 2 Corinthians 9:7
           </p>
           <p className="mt-6 text-gray-500 font-medium">

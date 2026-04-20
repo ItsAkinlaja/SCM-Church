@@ -53,12 +53,7 @@ const Home = () => {
   ];
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-scm-cream gap-4">
-         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-scm-blue"></div>
-         <span className="font-bold text-scm-blue">Loading Website...</span>
-      </div>
-    );
+    return null;
   }
 
   return (

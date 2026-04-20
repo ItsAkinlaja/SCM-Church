@@ -196,14 +196,18 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom copyright */}
-        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+        {/* Bottom copyright & Info */}
+        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-center items-center gap-4 mb-8 text-center">
           <p className="text-slate-600 text-[10px] font-sans font-bold uppercase tracking-[0.2em]">
             © {currentYear} Successful Christian Missions.
           </p>
-          <Link to="/admin" className="text-slate-600 hover:text-white text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-colors">
-            Admin Portal
-          </Link>
+        </div>
+
+        {/* Developer Credit - Bottom Middle */}
+        <div className="text-center">
+          <p className="text-slate-700 text-[9px] font-sans font-bold uppercase tracking-[0.3em] opacity-50 hover:opacity-100 transition-opacity">
+            Designed & Developed by <a href="https://akinlaja.netlify.app/" target="_blank" rel="noreferrer" className="text-slate-500 hover:text-scm-accent transition-colors">Akinlaja</a>
+          </p>
         </div>
 
       </div>
