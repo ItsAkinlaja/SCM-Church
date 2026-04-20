@@ -22,10 +22,12 @@ const Home = () => {
     go,
     latestSermon,
     settings,
+    announcements,
     loading,
   } = useHomeData();
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [showAnnouncements, setShowAnnouncements] = useState(true);
 
   // Use dynamic slides from DB or fallback
   const slides = settings?.hero_slides || [
@@ -125,6 +127,37 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Announcements Ticker/Alert Section */}
+      {announcements.length > 0 && showAnnouncements && (
+        <section className="bg-scm-accent py-3 sm:py-4 relative z-40 overflow-hidden shadow-lg border-b border-white/10">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 sm:gap-6 flex-1 overflow-hidden">
+                <div className="bg-white/20 p-2 rounded-lg animate-pulse hidden sm:block shrink-0">
+                  <Icons.Megaphone size={18} className="text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                    <span className="text-[10px] font-black uppercase tracking-widest bg-white text-scm-blue px-2 py-0.5 rounded shrink-0 w-fit">
+                      LATEST ALERT
+                    </span>
+                    <p className="text-white font-bold text-sm sm:text-base truncate">
+                      {announcements[0].title}: {announcements[0].content}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowAnnouncements(false)}
+                className="text-white/70 hover:text-white p-1 hover:bg-white/10 rounded-full transition-all shrink-0"
+              >
+                <Icons.X size={18} />
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Pillars Section - Modern Card Layout */}
       <section className="py-12 md:py-16 relative bg-scm-cream/50">
