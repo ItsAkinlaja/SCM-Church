@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../services/supabaseClient';
 import { useAdminStats } from '../hooks/useAdminStats';
 import {
   ArrowRight,
@@ -9,16 +10,36 @@ import {
   LayoutDashboard,
   ListChecks,
   Megaphone,
+  MessageSquare,
   Settings,
   Users,
   Image as ImageIcon,
   Mail,
   Video,
-  UserPlus
+  UserPlus,
+  Gift
 } from 'lucide-react';
 
 const Dashboard = () => {
   const { stats, loading } = useAdminStats();
+  const [birthdaysToday, setBirthdaysToday] = useState([]);
+  const [loadingBirthdays, setLoadingBirthdays] = useState(true);
+
+  useEffect(() => {
+    const fetchBirthdays = async () => {
+      // Avoid synchronous setLoadingBirthdays(true) in effect
+      const today = new Date();
+      const monthDay = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      
+      const { data } = await supabase.from('members').select('name, birthday');
+      if (data) {
+        const todays = data.filter(m => m.birthday && m.birthday.endsWith(monthDay));
+        setBirthdaysToday(todays);
+      }
+      setLoadingBirthdays(false);
+    };
+    fetchBirthdays();
+  }, []);
 
   const statCards = [
     {
@@ -136,7 +157,47 @@ const Dashboard = () => {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="rounded-[2rem] border border-[#eadfca] bg-white p-6 shadow-[0_20px_55px_rgba(7,17,38,0.06)] sm:p-8">
+        <div className="rounded-[2rem] bg-[#071126] p-6 text-white shadow-[0_24px_70px_rgba(7,17,38,0.16)] sm:p-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <div className="text-xs font-bold uppercase tracking-[0.28em] text-[#d96858]">Celebrations</div>
+              <h3 className="mt-3 text-3xl font-bold tracking-tight">Today's Birthdays</h3>
+            </div>
+            <div className="p-4 bg-white/5 rounded-2xl">
+              <Gift className="text-[#d96858]" size={24} />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {loadingBirthdays ? (
+              <div className="py-10 text-center text-white/40">Checking celebrants...</div>
+            ) : birthdaysToday.length > 0 ? (
+              birthdaysToday.map((member) => (
+                <div key={member.name} className="flex items-center justify-between p-5 bg-white/5 rounded-[24px] border border-white/10 group hover:bg-white/10 transition-all">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-[#d96858] text-white rounded-xl flex items-center justify-center font-black">
+                      {member.name[0]}
+                    </div>
+                    <span className="font-bold">{member.name}</span>
+                  </div>
+                  <Link to="/admin/communication" className="p-2 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <div className="py-10 text-center rounded-[1.5rem] border border-dashed border-white/10 bg-white/5">
+                <p className="text-sm text-white/40 font-bold uppercase tracking-widest">No birthdays today</p>
+              </div>
+            )}
+            
+            <Link to="/admin/communication" className="mt-6 flex items-center justify-center gap-2 py-4 bg-[#b53a2d] text-white rounded-[20px] text-xs font-black uppercase tracking-widest hover:bg-[#a03328] transition-all">
+              Manage Outreach <MessageSquare size={14} />
+            </Link>
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-[#eadfca] bg-white p-6 shadow-[0_20px_55_rgba(7,17,38,0.06)] sm:p-8">
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="text-xs font-bold uppercase tracking-[0.28em] text-[#b53a2d]">Quick Actions</div>

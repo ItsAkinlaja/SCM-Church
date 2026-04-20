@@ -35,6 +35,7 @@ import AdminMessages from './admin/Messages';
 import AdminSubscribers from './admin/Subscribers';
 import AdminGallery from './admin/AdminGallery';
 import AdminSermons from './admin/Sermons';
+import AdminCommunication from './admin/Communication';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -90,6 +91,7 @@ function App() {
         >
           <Route index element={<Navigate to="/admin/dashboard" />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="communication" element={<AdminCommunication />} />
           <Route path="events" element={<AdminEvents />} />
           <Route path="pamphlets" element={<AdminPamphlets />} />
           <Route path="members" element={<AdminMembers />} />

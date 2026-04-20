@@ -122,6 +122,7 @@ const Members = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState('All Departments');
   const [submitting, setSubmitting] = useState(false);
   const [importing, setImporting] = useState(false);
   const [notice, setNotice] = useState(null);
@@ -131,29 +132,53 @@ const Members = () => {
   const [formData, setFormData] = useState(emptyForm);
   const fileInputRef = useRef(null);
 
-  const fetchMembers = async () => {
-    setLoading(true);
+  const fetchMembers = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
     const { data } = await supabase.from('members').select('*').order('name', { ascending: true });
     if (data) setMembers(data);
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchMembers();
+    let isMounted = true;
+    
+    const loadData = async () => {
+      const { data } = await supabase.from('members').select('*').order('name', { ascending: true });
+      if (isMounted && data) {
+        setMembers(data);
+        setLoading(false);
+      }
+    };
+
+    loadData();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const filteredMembers = useMemo(
     () =>
       members.filter((member) => {
         const query = searchTerm.toLowerCase();
-        return (
+        const matchesSearch =
           member.name.toLowerCase().includes(query) ||
           member.department?.toLowerCase().includes(query) ||
-          member.email?.toLowerCase().includes(query)
-        );
+          member.email?.toLowerCase().includes(query);
+
+        const matchesDepartment =
+          selectedDepartment === 'All Departments' ||
+          member.department === selectedDepartment;
+
+        return matchesSearch && matchesDepartment;
       }),
-    [members, searchTerm]
+    [members, searchTerm, selectedDepartment]
   );
+
+  const departments = useMemo(() => {
+    const deps = new Set(members.map((m) => m.department).filter(Boolean));
+    return ['All Departments', ...Array.from(deps).sort()];
+  }, [members]);
 
   const resetImportState = () => {
     setCsvPreview([]);
@@ -373,16 +398,38 @@ const Members = () => {
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <div className="rounded-[2rem] border border-[#eadfca] bg-white p-6 shadow-[0_20px_55px_rgba(7,17,38,0.06)] sm:p-8">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="relative w-full md:max-w-md">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <input
-                type="text"
-                placeholder="Search by name, email, or department"
-                className="w-full rounded-2xl border border-[#eadfca] bg-[#fbf7eb] py-4 pl-12 pr-4 text-sm font-medium text-slate-800 outline-none transition focus:border-[#d8c5bb] focus:bg-white"
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-              />
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:flex-1">
+              <div className="relative w-full sm:max-w-xs">
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search members..."
+                  className="w-full rounded-2xl border border-[#eadfca] bg-[#fbf7eb] py-4 pl-12 pr-4 text-sm font-medium text-slate-800 outline-none transition focus:border-[#d8c5bb] focus:bg-white"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                />
+              </div>
+
+              <div className="relative w-full sm:max-w-[200px]">
+                <FileSpreadsheet className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <select
+                  className="w-full appearance-none rounded-2xl border border-[#eadfca] bg-[#fbf7eb] py-4 pl-12 pr-10 text-sm font-bold text-slate-700 outline-none transition focus:border-[#d8c5bb] focus:bg-white"
+                  value={selectedDepartment}
+                  onChange={(e) => setSelectedDepartment(e.target.value)}
+                >
+                  {departments.map((dept) => (
+                    <option key={dept} value={dept}>
+                      {dept}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-3">

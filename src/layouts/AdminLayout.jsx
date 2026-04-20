@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Calendar,
@@ -9,6 +9,7 @@ import {
   LogOut,
   Megaphone,
   Menu,
+  MessageSquare,
   Quote,
   Settings,
   ShieldCheck,
@@ -28,17 +29,23 @@ const AdminLayout = () => {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Close sidebar on navigation (mobile)
+  const [prevPathname, setPrevPathname] = useState(location.pathname);
+  if (location.pathname !== prevPathname) {
+    setPrevPathname(location.pathname);
+    if (isSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+  }
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/admin/login');
   };
 
-  useEffect(() => {
-    setIsSidebarOpen(false);
-  }, [location.pathname]);
-
   const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Communication', path: '/admin/communication', icon: MessageSquare },
     { name: 'Inbox', path: '/admin/messages', icon: Mail },
     { name: 'Subscribers', path: '/admin/subscribers', icon: UserPlus },
     { name: 'Gallery', path: '/admin/gallery', icon: ImageIcon },
