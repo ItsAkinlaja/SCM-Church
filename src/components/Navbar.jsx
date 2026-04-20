@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
-import { supabase } from '../services/supabaseClient';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [settings, setSettings] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
@@ -18,12 +16,15 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      const { data } = await supabase.from('settings').select('*').single();
-      if (data) setSettings(data);
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
     };
-    fetchSettings();
-  }, []);
+  }, [isOpen]);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -49,89 +50,95 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? 'glass-nav shadow-[0_4px_40px_rgba(0,0,0,0.02)]' : 'bg-transparent text-white'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-16 md:h-20' : 'h-20 md:h-24'}`}>
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-4 group">
-              <img
-                src="https://ik.imagekit.io/scmchurch/WhatsApp_Image_2026-03-27_at_05.29.17-removebg-preview.png?updatedAt=1774595668191"
-                alt="SCM Church Logo"
-                className={`w-auto object-contain transition-all duration-300 ${scrolled ? 'h-10 md:h-14 drop-shadow-xl' : 'h-12 md:h-16'}`}
-              />
-            </Link>
-          </div>
+    <>
+      <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+        scrolled || isOpen 
+          ? 'glass-nav shadow-[0_4px_40px_rgba(0,0,0,0.02)]' 
+          : 'bg-transparent text-white'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-16 md:h-20' : 'h-20 md:h-24'}`}>
+            <div className="flex items-center">
+              <Link to="/" className="flex items-center space-x-4 group">
+                <img
+                  src="https://ik.imagekit.io/scmchurch/WhatsApp_Image_2026-03-27_at_05.29.17-removebg-preview.png?updatedAt=1774595668191"
+                  alt="SCM Church Logo"
+                  className={`w-auto object-contain transition-all duration-300 ${scrolled ? 'h-10 md:h-14 drop-shadow-xl' : 'h-12 md:h-16'}`}
+                />
+              </Link>
+            </div>
 
-          {/* Desktop Nav */}
-          <div className="hidden lg:block">
-            <div className="flex items-center space-x-1">
-              {navLinks.map((link) => (
-                <div
-                  key={link.name}
-                  className="relative px-3"
-                  onMouseEnter={() => link.dropdown && setOpenDropdown(link.name)}
-                  onMouseLeave={() => link.dropdown && setOpenDropdown(null)}
-                >
-                  <Link
-                    to={link.path}
-                    className={`flex items-center px-2 py-2 text-[15px] font-sans font-medium transition-all duration-300 relative group ${
-                      scrolled 
-                        ? (isActive(link.path) || openDropdown === link.name ? 'text-scm-blue' : 'text-slate-500 hover:text-scm-blue')
-                        : (isActive(link.path) || openDropdown === link.name ? 'text-white' : 'text-white/80 hover:text-white')
-                    }`}
+            {/* Desktop Nav */}
+            <div className="hidden lg:block">
+              <div className="flex items-center space-x-1">
+                {navLinks.map((link) => (
+                  <div
+                    key={link.name}
+                    className="relative px-3"
+                    onMouseEnter={() => link.dropdown && setOpenDropdown(link.name)}
+                    onMouseLeave={() => link.dropdown && setOpenDropdown(null)}
                   >
-                    {link.name}
-                    {link.dropdown && <ChevronDown size={14} className={`ml-1 transition-transform duration-300 ${openDropdown === link.name ? 'rotate-180' : ''}`} />}
-                    <span className={`absolute bottom-0 left-0 h-[2px] transition-all duration-300 ${
-                      scrolled ? 'bg-scm-accent' : 'bg-white'
-                    } ${isActive(link.path) || openDropdown === link.name ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-                  </Link>
+                    <Link
+                      to={link.path}
+                      className={`flex items-center px-2 py-2 text-[15px] font-sans font-medium transition-all duration-300 relative group ${
+                        scrolled || isOpen
+                          ? (isActive(link.path) || openDropdown === link.name ? 'text-scm-blue' : 'text-slate-500 hover:text-scm-blue')
+                          : (isActive(link.path) || openDropdown === link.name ? 'text-white' : 'text-white/80 hover:text-white')
+                      }`}
+                    >
+                      {link.name}
+                      {link.dropdown && <ChevronDown size={14} className={`ml-1 transition-transform duration-300 ${openDropdown === link.name ? 'rotate-180' : ''}`} />}
+                      <span className={`absolute bottom-0 left-0 h-[2px] transition-all duration-300 ${
+                        scrolled || isOpen ? 'bg-scm-accent' : 'bg-white'
+                      } ${isActive(link.path) || openDropdown === link.name ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                    </Link>
 
-                  {link.dropdown && openDropdown === link.name && (
-                    <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-50 p-3 animate-fade-in z-50">
-                      {link.dropdown.map(item => (
-                        <Link
-                          key={item.name}
-                          to={item.path}
-                          className="flex items-center justify-between px-5 py-4 rounded-2xl text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-scm-blue transition-all duration-300 group"
-                        >
-                          {item.name}
-                          <div className="w-1.5 h-1.5 rounded-full bg-scm-accent opacity-0 group-hover:opacity-100 transition-all duration-300" />
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+                    {link.dropdown && openDropdown === link.name && (
+                      <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-50 p-3 animate-fade-in z-50">
+                        {link.dropdown.map(item => (
+                          <Link
+                            key={item.name}
+                            to={item.path}
+                            className="flex items-center justify-between px-5 py-4 rounded-2xl text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-scm-blue transition-all duration-300 group"
+                          >
+                            {item.name}
+                            <div className="w-1.5 h-1.5 rounded-full bg-scm-accent opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="hidden lg:flex items-center ml-8">
+              <Link
+                to="/support-us"
+                className={`py-3 px-7 text-[14px] font-sans font-bold hover:scale-105 transition-all duration-300 rounded-xl flex items-center justify-center ${
+                  scrolled || isOpen
+                    ? 'btn-primary' 
+                    : 'bg-white text-scm-blue opacity-95 hover:opacity-100'
+                }`}
+              >
+                Join Us
+              </Link>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="lg:hidden flex items-center">
+              <button
+                onClick={() => setIsOpen(true)}
+                className={`inline-flex items-center justify-center p-2 rounded-xl focus:outline-none transition-colors ${
+                  scrolled || isOpen ? 'text-gray-500 hover:bg-gray-50' : 'text-white hover:bg-white/10'
+                }`}
+              >
+                <Menu size={28} />
+              </button>
             </div>
           </div>
-
-          <div className="hidden lg:flex items-center ml-8">
-            <Link
-              to="/support-us"
-              className={`py-3 px-7 text-[14px] font-sans font-bold hover:scale-105 transition-all duration-300 rounded-xl flex items-center justify-center ${
-                scrolled 
-                  ? 'btn-primary' 
-                  : 'bg-white text-scm-blue opacity-95 hover:opacity-100'
-              }`}
-            >
-              Join Us
-            </Link>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="lg:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(true)}
-              className={`inline-flex items-center justify-center p-2 rounded-xl focus:outline-none transition-colors ${
-                scrolled ? 'text-gray-500 hover:bg-gray-50' : 'text-white hover:bg-white/10'
-              }`}
-            >
-              <Menu size={28} />
-            </button>
-          </div>
         </div>
-      </div>
+      </nav>
 
       {/* Mobile Nav - Slider from right to left */}
       <div
@@ -140,13 +147,13 @@ const Navbar = () => {
       >
         {/* Overlay */}
         <div
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          className="absolute inset-0 bg-black/60 backdrop-blur-md"
           onClick={() => setIsOpen(false)}
         />
 
         {/* Drawer Content */}
         <div
-          className={`absolute top-0 right-0 h-full w-[80%] max-w-xs bg-white shadow-2xl transition-transform duration-500 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'
+          className={`absolute top-0 right-0 h-full w-[85%] max-w-xs bg-white shadow-2xl transition-transform duration-500 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'
             }`}
         >
           {/* Header */}
@@ -220,7 +227,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
+    </>
   );
 };
 

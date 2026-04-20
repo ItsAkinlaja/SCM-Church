@@ -13,6 +13,9 @@ const SEO = ({ title, description, name, type, image }) => {
       <title>{title ? `${title} | SCM Church` : defaultTitle}</title>
       <meta name='description' content={description || defaultDescription} />
       
+      <link rel="icon" type="image/png" href="https://ik.imagekit.io/scmchurch/WhatsApp_Image_2026-03-27_at_05.29.17-removebg-preview.png?updatedAt=1774595668191" />
+      <link rel="shortcut icon" href="https://ik.imagekit.io/scmchurch/WhatsApp_Image_2026-03-27_at_05.29.17-removebg-preview.png?updatedAt=1774595668191" />
+      
       {/* OpenGraph tags */}
       <meta property="og:type" content={type || 'website'} />
       <meta property="og:title" content={title || defaultTitle} />

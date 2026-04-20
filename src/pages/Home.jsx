@@ -1,20 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../services/supabaseClient';
 import {
   ArrowRight,
-  BookOpenText,
-  CalendarDays,
   ChevronRight,
   Clock3,
-  HeartHandshake,
   Landmark,
   MapPin,
-  Megaphone,
   Quote,
-  ShieldCheck,
   Play,
-  Users,
 } from 'lucide-react';
 import { useHomeData } from '../hooks/useHomeData';
 import SEO from '../components/SEO';
@@ -22,21 +15,14 @@ import * as Icons from 'lucide-react';
 import { IKImage, IKContext } from 'imagekitio-react';
 import { imagekitConfig } from '../services/imagekit';
 
-const formatDate = (value, options) =>
-  new Date(value).toLocaleDateString(undefined, options);
-
 const Home = () => {
   const {
-    latestPamphlet,
     upcomingEvents,
-    announcements,
-    programmes,
     testimonies,
     go,
     latestSermon,
     settings,
     loading,
-    error
   } = useHomeData();
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -57,9 +43,6 @@ const Home = () => {
     }, 6000);
     return () => clearInterval(slideInterval);
   }, [slides.length]);
-
-  const weeklyProgs = programmes.filter((programme) => programme.occurrence === 'Weekly');
-  const monthlyProgs = programmes.filter((programme) => programme.occurrence === 'Monthly');
 
   const activePillars = settings?.pillars || [
     {
@@ -102,8 +85,8 @@ const Home = () => {
         ))}
 
         {/* Hero Content */}
-        <div className="relative h-full flex flex-col justify-center pt-16 pb-12 md:pb-20">
-          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 mt-4 md:mt-12 text-left">
+        <div className="relative h-full flex flex-col justify-center pt-24 md:pt-24 pb-12 md:pb-20">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 mt-12 md:mt-24 text-left">
             <div className="max-w-4xl mx-0">
               <div className="overflow-hidden mb-6">
                 <span className="inline-block text-scm-accent font-sans font-semibold uppercase tracking-[0.4em] text-xs sm:text-sm tracking-widest">
@@ -115,11 +98,11 @@ const Home = () => {
                 {slides[currentSlide].title}
               </h1>
               
-              <p className="text-[15px] sm:text-base md:text-xl text-slate-300 max-w-xl leading-relaxed mb-8 animate-fade-in [animation-delay:200ms] pr-2 sm:pr-0">
+              <p className="text-[15px] sm:text-base md:text-xl text-slate-300 max-w-xl leading-relaxed mb-12 sm:mb-8 animate-fade-in [animation-delay:200ms] pr-2 sm:pr-0">
                 {slides[currentSlide].subtitle}
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 animate-fade-in [animation-delay:400ms] w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mt-8 sm:mt-0 animate-fade-in [animation-delay:400ms] w-full sm:w-auto">
                 <Link to="/about" className="btn-primary border-none text-[14px] w-full sm:w-auto text-center justify-center py-3.5">
                   Discover Our Ministry
                   <ArrowRight size={18} className="inline-block ml-2 group-hover:translate-x-1 transition-transform" />
@@ -334,7 +317,7 @@ const Home = () => {
           <div className="grid md:grid-cols-3 gap-6">
             {/* Ministry Card 1 */}
             <div className="group relative aspect-[4/5] overflow-hidden bg-slate-900 cursor-pointer">
-              <img src="https://images.unsplash.com/photo-1543807535-eceef0bc6599?auto=format&fit=crop&q=80" alt="Youth Ministry" className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105" />
+              <img src="https://ik.imagekit.io/scmchurch/jesus-loves-austin-vA95WJnVNWk-unsplash.jpg" alt="Youth Ministry" className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 p-6 sm:p-8 w-full translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-500">
                 <h3 className="text-xl sm:text-2xl font-serif font-bold text-white mb-1 sm:mb-2">Youth Ministry</h3>
@@ -344,7 +327,7 @@ const Home = () => {
 
             {/* Ministry Card 2 */}
             <div className="group relative aspect-[4/5] overflow-hidden bg-slate-900 cursor-pointer">
-              <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80" alt="Women's Fellowship" className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105" />
+              <img src="https://ik.imagekit.io/scmchurch/ninthgrid-Dos4d3uIs1U-unsplash.jpg" alt="Women's Fellowship" className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 p-6 sm:p-8 w-full translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-500">
                 <h3 className="text-xl sm:text-2xl font-serif font-bold text-white mb-1 sm:mb-2">Women's Fellowship</h3>
@@ -354,7 +337,7 @@ const Home = () => {
 
             {/* Ministry Card 3 */}
             <div className="group relative aspect-[4/5] overflow-hidden bg-slate-900 cursor-pointer">
-              <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80" alt="Men's Fellowship" className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105" />
+              <img src="https://ik.imagekit.io/scmchurch/fellipe-silva-CSUQONYj654-unsplash.jpg" alt="Men's Fellowship" className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 p-6 sm:p-8 w-full translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-500">
                 <h3 className="text-xl sm:text-2xl font-serif font-bold text-white mb-1 sm:mb-2">Men's Fellowship</h3>
