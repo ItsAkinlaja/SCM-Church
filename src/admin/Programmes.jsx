@@ -74,7 +74,8 @@ const AdminProgrammes = () => {
       const { data } = await supabase
         .from('programmes')
         .select('*')
-        .order('order', { ascending: true });
+        .order('occurrence', { ascending: false })
+        .order('day_of_week', { ascending: true });
 
       if (!ignore) {
         if (data) setProgrammes(data);
